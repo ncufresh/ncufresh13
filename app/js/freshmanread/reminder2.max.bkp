@@ -1,0 +1,45 @@
+(function($)
+{
+    $.reminder2 = function(){
+      function select(receiptor)
+      {
+        jQuery.ajax({'success':function(data){    
+                                         // $("#ajaxDiv").hide() ;           
+                                         var div=$('<div id="ajaxRapped"></div>').html(data).hide();
+                                         $('#ajaxDiv').html(div);
+                                         div.fadeIn(700).animate({opacity: 1.0},700);
+                                         $.getScript(bUrl+"/app/js/freshmanread/ajaxADFR.js");
+                                     },
+                       'type': 'GET',//預設跑GET
+                       'url': UrlAjax ,
+                       'data' : { 'son' : receiptor } ,
+                       'cache':false});
+      }
+
+      $("#nav_active").click(function() {
+        select('Active');
+      });
+
+      $("#nav_freshman").click(function() {
+        select('Freshman');
+      });
+
+      $("#nav_relation").click(function() {
+        select('Relation');
+      });
+
+      $("#nav_document").click(function() {
+        select('Document');
+      });
+      
+
+    }
+})(jQuery);
+
+(function($)  
+{
+    $(document).ready(function()
+    {
+       $.reminder2();
+    });
+})(jQuery);

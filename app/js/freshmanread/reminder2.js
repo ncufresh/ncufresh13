@@ -1,0 +1,2 @@
+(function(a){a.reminder2=function(){function b(b){jQuery.ajax({success:function(b){b=a('<div id="ajaxRapped"></div>').html(b).hide();a("#ajaxDiv").html(b);b.fadeIn(700).animate({opacity:1},700);a.getScript(bUrl+"/app/js/freshmanread/ajaxADFR.js")},type:"GET",url:UrlAjax,data:{son:b},cache:!1})}a("#nav_active").click(function(){b("Active")});a("#nav_freshman").click(function(){b("Freshman")});a("#nav_relation").click(function(){b("Relation")});a("#nav_document").click(function(){b("Document")})}})(jQuery);
+(function(a){a(document).ready(function(){a.reminder2()})})(jQuery);

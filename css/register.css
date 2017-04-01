@@ -1,0 +1,61 @@
+/* line 1, ../scss/register.scss */
+.column {
+  width: 45%;
+  float: left;
+  margin: 0 auto;
+}
+/* line 5, ../scss/register.scss */
+.column .row {
+  margin: 0 auto;
+  text-align: center;
+}
+/* line 10, ../scss/register.scss */
+.column .control-label {
+  color: #D7D8CD;
+  font-size: 16px;
+}
+/* line 14, ../scss/register.scss */
+.column .control-group {
+  margin-bottom: 12px;
+}
+/* line 16, ../scss/register.scss */
+.column .control-group .errorMessage {
+  display: none;
+}
+
+/* line 21, ../scss/register.scss */
+.popover-content {
+  color: red;
+}
+
+/* line 24, ../scss/register.scss */
+#register_warpped {
+  width: 945px;
+  margin: 0 auto;
+}
+/* line 29, ../scss/register.scss */
+#register_warpped #register_head {
+  margin: 0 auto;
+  background-image: url("../file/img/registerHead.png");
+  background-repeat: no-repeat;
+  height: 108px;
+  width: 945px;
+}
+/* line 36, ../scss/register.scss */
+#register_warpped #register_body {
+  overflow: hidden;
+  margin: 0 auto;
+  background-image: url("../file/img/registerBody.png");
+  background-repeat: repeat-y;
+  width: 945px;
+  color: #D7D8CD;
+}
+/* line 45, ../scss/register.scss */
+#register_warpped #register_btm {
+  margin: 0 auto;
+  margin-top: -300px;
+  background-image: url("../file/img/registerBtm.png");
+  background-repeat: no-repeat;
+  height: 310px;
+  width: 945px;
+}

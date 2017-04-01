@@ -1,0 +1,411 @@
+#profile_main
+{
+	width: 100%;
+	height: 500px;
+	position: relative;
+}
+
+.profile_image
+{
+	left: -7%;
+	width: 112%;
+	position: absolute;
+}
+
+#profile_messageBoard
+{
+	width: 236px;
+	height: 168px;
+	left: 418px;
+	top: 14px;
+	cursor: pointer;
+}
+
+#profile_calendar
+{
+	width: 130px;
+	height: 130px;
+	top:14px;
+	left:241px;
+}
+
+#profile_calendar_all{
+	width: 103px;
+	height: 101px;
+	top:29px;
+	left:255px;
+	position: absolute;
+	opacity: 0.5;
+}
+
+#profile_dice
+{
+	width: 142px;
+	height: 101px;
+	top: 389px;
+	left: 557px;
+	cursor: pointer;
+}
+
+#profile_cloth
+{
+	width: 118px;
+	height: 186px;
+	top: 76px;
+	left: 840px;
+	cursor: pointer;
+}
+
+#profile_sub
+{
+	height: 0px;
+	opacity: 0;
+	display: none;
+	overflow: hidden;
+}
+#profile_person
+{
+	width: 100px;
+	top: 230px;
+	left: 565px;
+	cursor: pointer;
+}
+
+#profile_messageBoard_cnt
+{
+	width: 90%;
+	height: 406px;
+	position: relative;
+	display: none;
+	top: 0;
+	margin: 0 auto;
+	overflow: hidden;
+	/*overflow: hidden;*/
+}
+
+#profile_messageBoard_show{
+	position: relative;
+	/*height: 372px;*/
+	top: 0px;
+	width: 100%;
+	overflow: hidden;
+}
+
+#profile_messageBoard_button{
+
+}
+
+#profile_cloth_cnt
+{
+	width: 95%;
+	height: 550px;
+	position: relative;
+	display: none;
+	margin: 0 auto;
+}
+
+#profile_person_cnt
+{
+	width: 100%;
+	height: 420px;
+	position: relative;
+	display: none;
+}
+
+#profile_person_name
+{
+	top: -120px;
+	left: 0px;
+	position: absolute;
+}
+
+#profile_person_nick
+{
+	top: -10px;
+	left: 0px;
+	position: absolute;
+}
+
+#profile_person_de
+{
+	top: 100px;
+	left: 0px;
+	position: absolute;
+}
+
+#profile_person_birth
+{
+	top: -10px;
+	left: 350px;
+	position: absolute;
+	
+}
+
+#profile_person_highschool
+{
+	top: -120px;
+	left: 350px;
+	position: absolute;
+}
+
+#profile_person_email
+{
+	top: 210px;
+	left: 0px;
+	position: absolute;
+}
+
+#profile_person_friend
+{
+	top: 368px;
+	left: 885px;
+	position: absolute;
+	cursor: pointer;
+}
+
+#profile_person_edit
+{
+	top: 368px;
+	left: 884px;
+	position: absolute;
+}
+
+.profile_person_text
+{
+	color: black;
+	font: normal 28pt Arial,Helvetica,sans-serif;
+}
+
+#profile_person_text_name
+{
+	top: 16px;
+	left: 195px;
+	position: absolute;
+}
+
+#profile_person_text_nick
+{
+	top: 126px;
+	left: 195px;
+	position: absolute;
+}
+#profile_person_text_de
+{
+	top: 236px;
+	left: 195px;
+	position: absolute;
+}
+#profile_person_text_birth
+{
+	top: 126px;
+	left: 551px;
+	position: absolute;
+}
+#profile_person_text_highschool
+{
+	top: 16px;
+	left: 614px;
+	position: absolute;
+}
+#profile_person_text_email
+{
+	top: 346px;
+	left: 261px;
+	position: absolute;
+}
+
+#profile_person_friend_box
+{
+	width: 757px;
+	height: 565px;
+	position: absolute;
+	top: 0px;
+	left: 25px;
+}
+
+.messageBoard_show_main{
+	width: 100%;
+	height: 122px;
+	position: relative;
+	margin-bottom: 10px;
+	padding: 20px;
+	overflow: hidden;
+}
+
+.messageBoard_show_main_left{
+	width: 15%;
+	min-height: 80px;
+	float: left;
+	margin-left: -17px;
+	margin-top: -12px;
+}
+
+.messageBoard_show_main_right{
+	width: 80%;
+	float: left;
+}
+
+.messageBoard_show_img{
+	height: 101px;
+	overflow: hidden;
+	padding-top: 31px;
+	padding-left: 37px;
+	padding-bottom: 6px;
+	cursor: pointer;
+}
+
+.messageBoard_show_name{
+	width: 75%;
+	font-size: 26px;
+	height: 30px;
+	float: left;
+}
+
+.messageBoard_show_time{
+	width: 25%;
+	height: 30px;
+	float: left;
+	text-align: right;
+}
+
+.messageBoard_show_message{
+	font-size: 20px;
+	line-height: 30px;
+	height: 100%;
+}
+
+.messageBoard_show_edit{
+	width: 57px;
+	height: 28px;
+	position: absolute;
+	left: 823px;
+	top: 115px;
+	cursor: pointer;
+}
+
+#messageBoard_get_more{
+	height: 40px;
+	width: 40%;
+	margin: 0 auto;
+	position: relative;
+	background-color: limegreen;
+	border-radius: 5px;
+	padding-top: 20px;
+	font-size: 50px;
+	color: yellowgreen;
+	text-align: center;
+	cursor: pointer;
+}
+
+#profile_messageBoard_add_button{
+	width: 142px;
+	height: 85px;
+	clear: both;
+	float: right;
+	padding-left: 50px;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+#profile_messageBoard_add_main{
+	width: 630px;
+	height: 235px;
+	margin: 0 auto;
+	background-color: #fd9501;
+	background-size: 660px 260px;
+	padding-left: 31px;
+	padding-top: 30px;
+	border-radius: 10px;
+
+}
+
+#profile_messageBoard_add_display{
+	width: 100%;
+	font-size: 36px;
+	padding-top: 6px;
+	height: 32px;
+	color: white;
+}
+
+#profile_messageBoard_add_word{
+	margin-left: -18px;
+	width: 100%;
+	height: 150px;
+
+}
+
+#profile_messageBoard_add_word_area{
+	width: 99%;
+	height: 146px;
+	resize : none;
+}
+
+#profile_messageBoard_add_send{
+	/*width: 100%;*/
+	text-align: right;
+}
+
+#profile_messageBoard_add_send_button{
+	width: 150px;
+	height: 60px;
+}
+
+.profile_cloth_shop
+{
+	left: 27px;
+	top: 75px;
+	width: 900px;
+	position: relative;
+	height: 336px;
+	display:none;
+}
+
+.profile_cloth_shopitem
+{
+	width: 50px;
+	height: 100px;
+	position: absolute;
+	cursor: pointer;
+}
+
+#profile_calender_show{
+	width: 200px;
+	min-height: 100px;
+	position: absolute;
+	left: 200px;
+	top: 140px;
+	z-index: 10;
+	background-color: lightgreen;
+	border-radius: 15px;
+	border-color: #000000;
+	padding: 10px;
+	display: none;
+	/*border-width: 2px;*/
+}
+
+#profile_change_skin_button{
+	cursor: pointer;
+}
+
+#profile_calender_title{
+	width: 100%;
+	font-size: 30px;
+	text-align: center;
+}
+
+.profile_calender_item{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	width: 100%;
+	font-size: 20px;
+	line-height: 30px;
+}
+
+#profile_shop_money{
+	width: 129px;
+	height: 35px;
+	position: absolute;
+	left: 185px;
+	top: 441px;
+	font-size: 35px;
+}

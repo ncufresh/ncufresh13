@@ -1,0 +1,232 @@
+
+		
+		
+
+	(function($)
+{
+
+	$.life = function(options)
+	{
+
+		var open = 0;
+		var isAction = false;
+		var btnTemp = 0;
+		var srcTemp = "nothing";
+		var areaTemp = 0;
+
+	
+		
+		$(".button").click(function()
+		{		
+			
+			
+			choose = $(this).attr('id');
+			img = $(this).children().attr('id');
+
+			
+			changeBody(choose);
+			btnChooser(open,img);
+		});
+
+
+
+		function Clear(){
+
+			$("#mid_slide").slideUp("fast");
+			for (var i = 0; i < 6; i++) {
+				$("#b"+(i+1)).slideUp("fast");
+			}	
+		}
+
+		for (var i = 0; i < 6; i++) {
+			flipCreater(i+1);	
+		}
+
+
+		function flipCreater(number){
+
+			
+			$("#flip"+number).click(function(){
+				
+
+				if(open == number && !isAction){
+					isAction=true;
+
+				
+					$("#mid_slide").slideUp("fast",function(){							
+						$("#b"+open).slideUp("fast",function(){
+							btnChooser(number,"nothing");
+							document.getElementById("set"+open).src = flip[open];
+							open = 0;	
+							isAction=false;
+							$.bar($("#bodyscroll"));
+						});						
+					});
+					
+				}
+				else if (open == 0 && !isAction ){
+					btnChooser(number,"nothing");
+					changeBody(number);
+					isAction=true;
+					
+					$("#b"+number).slideDown("fast",function(){
+
+						document.getElementById("set"+number).src = flipSet[number];
+						$("#mid_slide").slideDown("slow",function(){
+							open = number;
+							isAction=false;
+							$.bar($("#bodyscroll"));
+							$.bar($("#contentsBar"),true);
+						});
+					});
+					
+					
+				}
+				else if ( !isAction ){
+					isAction=true;
+
+					$("#mid_slide").slideUp("fast",function(){
+						btnChooser(number,"nothing");
+						changeBody(number);
+						$("#b"+open).slideUp("fast",function(){
+							document.getElementById("set"+open).src = flip[open];
+							$("#b"+number).slideDown("fast",function(){
+								document.getElementById("set"+number).src = flipSet[number];
+								$("#mid_slide").slideDown("slow",function(){
+									open = number;	
+									isAction=false;
+									$.bar($("#bodyscroll"));
+									$.bar($("#contentsBar"),true);
+								});
+							});	
+						});						
+					});
+				}	
+			});
+		}
+
+		
+
+
+		function changeBody(btnName){
+
+			switch(btnName)
+			{
+				case 1:
+				  btnName="_ncuBook";
+				  break;
+				case 2:
+				  btnName="_ncuEat";
+				 break;
+				  case 3:
+				  btnName="_ncuNeed";
+				  break;
+				 case 4:
+				  btnName="_bike";
+				  break;
+				 case 5:
+				  btnName="_outMovie";
+				  break;
+				 case 6:
+				  btnName="_ncuHealth";
+				  break;
+
+				default:
+				  break;
+			}
+
+			jQuery.ajax({'success':function(html){
+			                        $("#contents").html(html);
+			                        },
+			                'data': { 'select': btnName},
+			                'url':	motionBody,
+			                'cache':false}).done(function(){
+			                	$.bar($("#contentsBar"),true);
+			                });
+			
+		
+		}
+
+		function btnChooser(btnArea,imgSrc){
+			// alert("areaTemp is "+areaTemp);
+			// alert("btnTemp is "+btnTemp);
+			// alert("srcTemp is "+srcTemp);
+
+			var str;
+			var btnNum = 0;
+			for (var i = 1; i < 10; i++) {
+				
+				str="b"+btnArea+"_"+i;
+				if (str.match(imgSrc)!=null) {
+					
+				 	btnNum = i;
+				 	
+				 }
+			}	
+
+
+			if(areaTemp==0){
+
+				document.getElementById("b"+btnArea+"_1").src = btnSet[btnArea][1];
+				areaTemp=btnArea;
+				btnTemp=1;
+				srcTemp="b"+btnArea+"_1";
+				// alert("btnArea is "+btnArea);
+				// alert("btnNum is "+btnNum);
+				// alert("imgSrc is "+imgSrc);
+
+				// alert("areaTemp==0");
+
+
+			}else if(btnArea==areaTemp && btnNum==0){
+				document.getElementById(srcTemp).src = btnImg[areaTemp][btnTemp];
+				areaTemp=0;
+				btnTemp=btnNum;
+				srcTemp="";
+				// alert("btnArea is "+btnArea);
+				// alert("btnNum is "+btnNum);
+				// alert("imgSrc is "+imgSrc);
+				// alert("btnArea==areaTemp && btnNum==0");
+			}else if(btnArea==areaTemp && btnNum!=btnTemp){
+				document.getElementById(srcTemp).src = btnImg[areaTemp][btnTemp];
+				document.getElementById(imgSrc).src = btnSet[btnArea][btnNum];
+				areaTemp=btnArea;
+				btnTemp=btnNum;
+				srcTemp=imgSrc;	
+				// alert("btnArea is "+btnArea);
+				// alert("btnNum is "+btnNum);
+				// alert("imgSrc is "+imgSrc);	
+
+				// alert("btnArea==areaTemp && btnNum!=btnTemp");			
+			}else if(btnArea != areaTemp){
+				document.getElementById(srcTemp).src = btnImg[areaTemp][btnTemp];
+				document.getElementById("b"+btnArea+"_1").src = btnSet[btnArea][1];
+				areaTemp=btnArea;
+				btnTemp=1;
+				srcTemp="b"+btnArea+"_1";
+				// alert("btnArea is "+btnArea);
+				// alert("btnNum is "+btnNum);
+				// alert("imgSrc is "+imgSrc);
+
+				// alert("btnArea != areaTemp");
+
+			}
+					
+				
+					
+
+		}
+
+	};
+
+
+})(jQuery);
+			
+			
+	(function($){
+   	 $(document).ready(function()
+   		 {	
+
+			$.life();
+    	});
+	})(jQuery);

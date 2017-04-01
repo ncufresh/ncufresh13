@@ -1,0 +1,116 @@
+ 			.flip, .button, #mid, #contentsBar
+ 			{
+ 				display: inline-block;
+ 			}
+
+ 			.flips, .flip, #button, .button, #mid, #panel, #main, #contentsBar
+ 			{
+ 				text-align:center;
+ 				margin: 0 auto;
+ 			}
+
+			.flips
+			{
+				height:180px;
+			}
+
+			.flip
+			{
+				cursor:pointer;
+				width:30%;		
+			}
+
+			#button
+			{	
+				left-margin:5%;
+				float:left;
+				width:250px;
+			}
+
+			.button
+			{	
+				
+				cursor: pointer;
+				width:100%;
+				margin-top:5%; 
+			}
+
+			
+
+			#mid_slide
+			{
+				display: none;
+			}
+
+			#mid
+			{		
+				height:500px;   
+			}
+
+			#panel
+			{	
+				float:left;
+				height:600px;
+				width:600px;
+			}
+
+			
+			
+			#main
+			{
+				width:100%;
+			}
+			
+			#contentsBar
+			{
+				position: relative;
+				top: -440px;
+				width:540px;
+				height:350px;				
+				overflow:hidden;
+			}
+
+			#contents
+			{	
+				line-height: 200%;
+				color: black;
+				width:460px;
+				position: absolute;
+				padding-left: 30px;
+				top: 0px;
+			}
+
+	
+
+			.sampleTitle
+			{
+				
+			}
+
+			.sampleTitle h1 
+			{
+				
+				font-family: 微軟正黑體;
+				font-weight: bold;
+				font-size: 40px;
+			}
+
+			.sampleContents
+			{
+				text-align:left;
+			}
+
+			.sampleContents h1
+			{
+				
+				font-size: 30px;
+				font-weight: bold;
+				font-family: 微軟正黑體;
+			}
+
+			.sampleContents p
+			{
+				
+				font-family: 微軟正黑體;
+				font-size:20px;
+			}

@@ -1,0 +1,341 @@
+/* line 2, ../scss/index.scss */
+.red-color {
+  color: red;
+}
+
+/* line 5, ../scss/index.scss */
+.cnt {
+  float: left;
+}
+
+/* line 8, ../scss/index.scss */
+#cnt_left {
+  width: 26%;
+  margin-top: 10px;
+}
+
+/* line 12, ../scss/index.scss */
+#cnt_body {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* line 16, ../scss/index.scss */
+ul {
+  list-style-type: none;
+}
+
+/* line 19, ../scss/index.scss */
+#cnt_center {
+  width: 51%;
+}
+/* line 22, ../scss/index.scss */
+#cnt_center #index_calender {
+  width: 480px;
+  height: 270px;
+  margin: 0 auto;
+  background-image: url("../file/img/calender.gif");
+  background-repeat: no-repeat;
+}
+/* line 31, ../scss/index.scss */
+#cnt_center #cnt_center_bottom .cnt_blk {
+  float: left;
+}
+
+/* line 36, ../scss/index.scss */
+#cnt_right {
+  width: 20%;
+  margin-top: 10px;
+}
+
+/* line 42, ../scss/index.scss */
+.cnt_blk {
+  width: 250px;
+  margin: 0 auto;
+}
+/* line 45, ../scss/index.scss */
+.cnt_blk .cnt_blk_head {
+  margin: 0 auto;
+  height: 70px;
+  background-repeat: no-repeat;
+}
+/* line 51, ../scss/index.scss */
+.cnt_blk .cnt_blk_wide_body {
+  margin: 0 auto;
+  overflow: hidden;
+  color: #FFD78C;
+  background-image: url("../file/img/wideblkBody.gif");
+  background-repeat: repeat-y;
+}
+/* line 58, ../scss/index.scss */
+.cnt_blk .cnt_blk_wide_btm {
+  margin: 0 auto;
+  background-image: url("../file/img/wideblkBtm.gif");
+  background-repeat: no-repeat;
+  height: 60px;
+}
+/* line 64, ../scss/index.scss */
+.cnt_blk .cnt_blk_narrow_body {
+  margin: 0 auto;
+  overflow: hidden;
+  color: #FFF3DD;
+  background-image: url("../file/img/narrowblkBody.gif");
+  background-repeat: repeat-y;
+}
+/* line 71, ../scss/index.scss */
+.cnt_blk .cnt_blk_narrow_btm {
+  margin: 0 auto;
+  background-image: url("../file/img/narrowblkBtm.gif");
+  background-repeat: no-repeat;
+  height: 20px;
+}
+
+/* line 79, ../scss/index.scss */
+#index_hot {
+  background-image: url("../file/img/hot.gif");
+}
+
+/* line 82, ../scss/index.scss */
+#index_forum {
+  background-image: url("../file/img/forum.gif");
+}
+
+/* line 85, ../scss/index.scss */
+#index_forum_body {
+  height: 253px;
+}
+
+/* line 88, ../scss/index.scss */
+#index_news {
+  background-image: url("../file/img/news.gif");
+}
+
+/* line 91, ../scss/index.scss */
+#index_news_body {
+  height: 253px;
+}
+
+/* line 94, ../scss/index.scss */
+#index_recommend {
+  background-image: url("../file/img/recommend.gif");
+}
+
+/* line 97, ../scss/index.scss */
+#index_oftenlink {
+  background-image: url("../file/img/oftenlink.gif");
+}
+
+/* line 100, ../scss/index.scss */
+#index_video {
+  background-image: url("../file/img/video.gif");
+}
+
+/* line 103, ../scss/index.scss */
+.link_content {
+  padding: 5px;
+  text-align: center;
+}
+/* line 106, ../scss/index.scss */
+.link_content .items {
+  width: 90%;
+  margin: 0 auto;
+}
+/* line 109, ../scss/index.scss */
+.link_content .items .title {
+  float: left;
+}
+/* line 112, ../scss/index.scss */
+.link_content .items .time {
+  float: right;
+}
+/* line 116, ../scss/index.scss */
+.link_content .pager {
+  text-align: center;
+}
+/* line 119, ../scss/index.scss */
+.link_content .yiiPager {
+  margin: 0 auto;
+}
+
+/**
+calander
+**/
+/* line 126, ../scss/index.scss */
+.date {
+  width: 61px;
+  height: 17px;
+  float: left;
+  font-size: 17px;
+}
+
+/* line 132, ../scss/index.scss */
+.divEventContent {
+  border: 2px solid red;
+  height: auto;
+  position: absolute;
+}
+
+/* line 139, ../scss/index.scss */
+.eventContent {
+  font-size: 10px;
+  padding-left: 3px;
+  margin-bottom: -1px;
+}
+
+/* line 144, ../scss/index.scss */
+#calendar_leftarrow {
+  position: absolute;
+  height: 80px;
+  margin-top: 30px;
+  margin-left: 6px;
+}
+
+/* line 151, ../scss/index.scss */
+#datecontent {
+  position: absolute;
+  width: 427px;
+  height: 150px;
+  left: 30px;
+  top: 0px;
+  overflow: hidden;
+  display: inline-block;
+  user-select: none;
+  -o-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+/* line 167, ../scss/index.scss */
+#dateDisplay {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  cursor: default;
+}
+
+/* line 172, ../scss/index.scss */
+#eventDisplay {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  cursor: default;
+}
+
+/* line 177, ../scss/index.scss */
+#index_calendar_head {
+  height: 90px;
+  margin: 0 auto;
+  background-image: url("../file/img/calenderHead.gif");
+  background-repeat: no-repeat;
+}
+
+/* line 185, ../scss/index.scss */
+#index_calendar_body {
+  height: 120px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  background-image: url("../file/img/calenderBody.gif");
+  background-repeat: repeat-y;
+}
+
+/* line 194, ../scss/index.scss */
+#index_calendar_btm {
+  height: 30px;
+  background-image: url("../file/img/calenderBottom.gif");
+  background-repeat: no-repeat;
+}
+
+/**
+*news jumbwindow
+**/
+/* line 203, ../scss/index.scss */
+.news_view {
+  background: #EEEFA1;
+  border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* line 210, ../scss/index.scss */
+.news_view_in {
+  top: 0px;
+  position: absolute;
+  width: 100%;
+}
+
+/* line 217, ../scss/index.scss */
+.news_view .header {
+  top: 10px;
+  position: relative;
+  height: 80px;
+  overflow: hidden;
+  width: 98%;
+  margin: 0 auto;
+  background: #FDFF55;
+  border-radius: 15px;
+  border-color: black;
+  border-width: 1px;
+  border-bottom-width: 5px;
+  border-right-width: 5px;
+  border-style: solid;
+}
+
+/* line 234, ../scss/index.scss */
+.news_view .news_content {
+  top: 20px;
+  position: relative;
+  overflow: hidden;
+  width: 98%;
+  margin: 0 auto;
+  background: #CDE5FF;
+  border-radius: 15px;
+  border-color: black;
+  border-width: 1px;
+  border-bottom-width: 5px;
+  border-right-width: 5px;
+  border-style: solid;
+}
+
+/* line 250, ../scss/index.scss */
+.news_view h4 {
+  font-size: 40px;
+  padding-left: 15px;
+  padding-top: 5px;
+  font-family: 微軟正黑體;
+}
+
+/* line 257, ../scss/index.scss */
+.news_view .time {
+  text-align: right;
+  padding-right: 15px;
+  position: relative;
+}
+
+/* line 263, ../scss/index.scss */
+.news_view .author {
+  text-align: right;
+  padding-right: 15px;
+  position: relative;
+}
+
+/* line 270, ../scss/index.scss */
+.news_view .text {
+  margin-left: 15px;
+  margin-top: 10px;
+}
+
+/* line 276, ../scss/index.scss */
+.news_view .news_body {
+  top: 0px;
+  position: relative;
+}
+
+/**
+*hotvideo
+*/
+/* line 287, ../scss/index.scss */
+#hotvid {
+  width: 90%;
+  margin-left: 10px;
+  margin-right: auto;
+}

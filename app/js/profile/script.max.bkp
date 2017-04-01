@@ -1,0 +1,926 @@
+(function($)
+{
+	$.profile = function(options)
+    {
+		var sub_index = 0;
+
+		var message_index = 0;
+		var message_per_page = 10;
+		var messageData;
+
+		$("#profile_main").parent().css("overflow","visible");
+		$("#profile_calendar_all").mouseover(function(){
+			$("#profile_calendar").attr("src",bUrl + "/file/img/profile/calendar_light_cut.png");
+			$("#profile_calender_show").remove();
+			var all = $("<div id='profile_calender_show'></div>");
+			var title = $("<div id='profile_calender_title'></div>").append('今日活動');
+			title.appendTo(all);
+			for(var i=0; i<todayEvent.length; i++){
+				var item = $("<div class='profile_calender_item'></div>").append(todayEvent[i]);
+				item.appendTo(all);
+			}
+			if(todayEvent.length == 0){
+				var item = $("<div class='profile_calender_item'></div>").append('今日無特別活動');
+				item.appendTo(all);
+			}
+			all.appendTo($("#profile_main")).fadeIn('slow');
+		}).mouseleave(function(){
+				$("#profile_calendar").attr("src",bUrl + "/file/img/profile/calendar_cut.png");
+				$("#profile_calender_show").fadeOut('slow');
+				//$("#profile_calender_show").remove();
+			});
+		$("#profile_dice").click(function(){
+			$(location).attr('href',bUrl + "/game/index.html");
+		}).mouseover(function(){
+			$(this).attr("src",bUrl + "/file/img/profile/dice_light_cut.gif");
+		}).mouseleave(function(){
+			$(this).attr("src",bUrl + "/file/img/profile/dice_cut.gif");
+		});
+		$("#profile_messageBoard").click(function(){
+			if(sub_index != 1)
+			{
+				$("#profile_sub_cnt").empty();
+				var button = $("<div id='profile_messageBoard_add_button'></div>").css({
+					backgroundImage: 'url('+bUrl+'/file/img/profile/message/button_cut.png)'
+				}).appendTo($("#profile_sub_cnt"));
+				button.mouseover(function(){
+					$(this).css({
+						backgroundImage: 'url('+bUrl+'/file/img/profile/message/button_light_cut.png)'
+					})
+				}).mouseout(function(){
+					$(this).css({
+						backgroundImage: 'url('+bUrl+'/file/img/profile/message/button_cut.png)'
+					})
+				});
+				button.click(function(){
+					var addMain = $('<div id="profile_messageBoard_add_main"></div>').css({
+						backgroundImage: 'url('+bUrl+'/file/img/profile/message/frame_cut.png)'
+					});
+					var addDisplay = $('<div id="profile_messageBoard_add_display"></div>').append("留言");
+					var addText = $('<div id="profile_messageBoard_add_word"></div>');
+					var addTextArea = $('<textarea id="profile_messageBoard_add_word_area"></textarea>');
+					var addSend = $('<div id="profile_messageBoard_add_send"></div>');
+					var addSendButton = $('<img id="profile_messageBoard_add_send_button"/>').css({
+						backgroundImage: 'url('+bUrl+'/file/img/profile/message/button_cut.png)',
+						width: '150px',
+						height: '60px',
+						backgroundSize: '150px 60px',
+						marginTop: '-34px',
+						marginRight: '27px'
+					});
+
+					addSendButton.mouseover(function(){
+						$(this).css({
+							backgroundImage: 'url('+bUrl+'/file/img/profile/message/button_light_cut.png)'
+						})
+					}).mouseout(function(){
+							$(this).css({
+								backgroundImage: 'url('+bUrl+'/file/img/profile/message/button_cut.png)'
+							})
+						});
+
+					addTextArea.appendTo(addText);
+					addSendButton.appendTo(addSend);
+
+					addDisplay.appendTo(addMain);
+					addText.appendTo(addMain);
+					addSend.appendTo(addMain);
+
+					addSendButton.click(function(){
+						var message = addTextArea.val();
+						var check = true;
+						if(message.toLowerCase().search("script")>=0){
+							alert("請勿使用script");
+							check = false;
+						}
+						if(message.length == 0){
+							alert("請記得打字喔~");
+							check = false;
+						}
+
+						if(check){
+							$.jumpWindowClose();
+							addMessage(message);
+						}
+					});
+
+					$.jumpWindow(addMain);
+
+				});
+
+
+				var cnt = $("<div id='profile_messageBoard_cnt'></div>").appendTo($("#profile_sub_cnt"));
+				$("<div id='profile_messageBoard_show'></div>").appendTo(cnt);
+				getMessage();
+
+				$("#profile_messageBoard_cnt").show();
+				$("#profile_sub").animate({
+					opacity: '0',
+					height: '0px'
+				}).show().animate({
+					opacity: '1.0',
+					height: '650px'
+				},'normal','swing',function(){
+					sub_index = 1;
+					$.bar($("#bodyscroll"));
+				});
+			}
+			else
+			{
+				$("#profile_sub_cnt").empty();
+				$("#profile_sub").animate({
+					opacity: '0',
+					height: '0px'
+				},'normal','swing',function(){
+					$("#profile_sub").hide();
+					sub_index = 0;
+					$.bar($("#bodyscroll"));
+				});
+			}
+		}).mouseover(function(){
+			$(this).attr("src",bUrl + "/file/img/profile/messageBoard_light_cut.gif");
+		}).mouseleave(function(){
+			$(this).attr("src",bUrl + "/file/img/profile/messageBoard_cut.gif");
+		});
+		$("#profile_person").click(function(){
+			if(sub_index != 2)
+			{	
+				function person_init()
+				{
+					$("#profile_sub_cnt").empty();
+					var person_cnt = $('<div id="profile_person_cnt"></div>').show().appendTo($("#profile_sub_cnt"));
+					$('<img id="profile_person_name" src="'+bUrl+'/file/img/profile/name_button.png"/>').appendTo(person_cnt);
+					$('<img id="profile_person_nick" src="'+bUrl+'/file/img/profile/nickname_button.png"/>').appendTo(person_cnt);
+					$('<img id="profile_person_de" src="'+bUrl+'/file/img/profile/de_button.png"/>').appendTo(person_cnt);
+					$('<img id="profile_person_birth" src="'+bUrl+'/file/img/profile/birthday_button.png"/>').appendTo(person_cnt);
+					$('<img id="profile_person_highschool" src="'+bUrl+'/file/img/profile/highschool_button.png"/>').appendTo(person_cnt);
+					$('<img id="profile_person_email" src="'+bUrl+'/file/img/profile/email_button.png"/>').appendTo(person_cnt);
+					$('<div class="profile_person_text" id="profile_person_text_name">'+userProfile.name+'</div>').appendTo(person_cnt);
+					$('<div class="profile_person_text" id="profile_person_text_nick">'+userProfile.nickname+'</div>').appendTo(person_cnt);
+					$('<div class="profile_person_text" id="profile_person_text_de">'+userProfile.department_name+' '+userProfile.grade+'</div>').appendTo(person_cnt);
+					$('<div class="profile_person_text" id="profile_person_text_birth">'+userProfile.birthday+'</div>').appendTo(person_cnt);
+					$('<div class="profile_person_text" id="profile_person_text_highschool">'+userProfile.high_school+'</div>').appendTo(person_cnt);
+					$('<div class="profile_person_text" id="profile_person_text_email">'+userProfile.username+'</div>').appendTo(person_cnt);
+					if( itself == 1)
+					{
+						$('<img id="profile_person_friend" src="'+bUrl+'/file/img/profile/friend_button.png"/>').click(function(){
+							var back = $('<div></div>').css({
+								width:	'100%',
+								height: '100%',
+								position: 'fixed',
+								background: 'rgba(0,0,0,0.8)',
+								left: '0px',
+								top: '0px',
+								textAlign: 'center',
+								zIndex: '20'
+							}).hide().appendTo("body").fadeIn();
+							var friendOutBox = $('<div id="friendOutBox"></div>').css({
+								width: '807px',
+								height: '84%',
+								position: 'relative',
+								top: '8%',
+								left: '0px',
+								margin: '0 auto',
+								overflow: 'hidden'
+							}).appendTo(back);
+							var friendOutBox_white = $('<div></div>').css({
+								background: 'white',
+								width: '807px',
+								height: '565px',
+								position: 'absolute',
+								top: '0px',
+								left: parseInt(friendOutBox.css("width").replace("px",""))/2 - 403 +'px'
+							}).appendTo(friendOutBox);
+							var friendBox = $('<div id="profile_person_friend_box" ></div>').appendTo(friendOutBox_white);
+							$('<img src="'+bUrl+'/file/img/profile/friend_back.png"/>').css({
+								width: '757px',
+								height: '565px',
+								position: 'absolute',
+								left: '0px'
+							}).appendTo(friendBox);
+							$.bar(friendOutBox);
+							var now_friend_box = $('<div></div>').css({
+								width: '676px',
+								height: '212px',
+								top: '67px',
+								overflow: 'hidden',
+								position: 'relative',
+								margin: '0 auto'
+							}).appendTo(friendBox);
+							
+							var now_friend_bar = $('<div></div>').css({
+								position: 'absolute',
+								width: 180*friendList.length +'px',
+								height: '204px',
+								top: '0px',
+								left: '0px'
+							}).appendTo(now_friend_box);
+							for(var i =0; i<friendList.length;i++)
+							{
+								var personBox = $('<div person="'+ i +'"></div>').css({
+									width: '149px',
+									height: '204px',
+									overflow: 'hidden',
+									position: 'relative',
+									float: 'left',
+									margin: '0px 15px'
+								}).appendTo(now_friend_bar);
+								$('<img src="'+bUrl+'/file/img/profile/person_box.png"/>').css({
+									width: '149px',
+									height: '204px'
+								}).appendTo(personBox);
+								$('<img src="'+bUrl+'/file/img/personal/' + friendList[i].skin_id + '.gif"/>').css({
+									position: 'absolute',
+									left: '28px',
+									top: '21px',
+									height: '139px'
+								}).appendTo(personBox);
+								$('<p>'+friendList[i].nickname + '</p>').css({
+									position: 'absolute',
+									left: '0px',
+									top: '153px',
+									width: '149px',
+									textAlign: 'center'
+								}).appendTo(personBox);
+								var look_button = $('<img src="'+bUrl+'/file/img/profile/check_person.png" id="' + friendList[i].uid  + '"/>').css({
+									top: '150px',
+									left: '3px',
+									width: '70px',
+									height: '70px',
+									position: 'absolute'
+								}).appendTo(personBox).click(function(){
+									var uid = $(this).attr('id');
+									window.location = bUrl + '/profile/index/' + uid + '.html';
+								});
+								var delete_button = $('<img src="'+bUrl+'/file/img/profile/del_friend.png" id="' + friendList[i].uid + '"/>').css({
+									top: '150px',
+									left: '69px',
+									width: '70px',
+									height: '70px',
+									position: 'absolute'
+								}).appendTo(personBox).click(function(){
+									var uid = $(this).attr('id');
+									removeFriend(uid);
+									alertMsg('刪除成功', '', 'error');
+										$(this).fadeOut();
+								});
+							}
+							var suggest_friend_box = $('<div></div>').css({
+								width: '676px',
+								height: '212px',
+								top: '115px',
+								overflow: 'hidden',
+								position: 'relative',
+								margin: '0 auto'
+							}).appendTo(friendBox);
+							var suggest_friend_bar = $('<div></div>').css({
+								position: 'absolute',
+								width: 180*suggestList.length +'px',
+								height: '204px',
+								top: '0px',
+								left: '0px'
+							}).appendTo(suggest_friend_box);
+							for(var i =0; i<suggestList.length;i++)
+							{
+								var personBox = $('<div></div>').css({
+									width: '149px',
+									height: '204px',
+									overflow: 'hidden',
+									position: 'relative',
+									float: 'left',
+									margin: '0px 15px'
+								}).appendTo(suggest_friend_bar);
+								$('<img src="'+bUrl+'/file/img/profile/person_box.png"/>').css({
+									width: '149px',
+									height: '204px'
+								}).appendTo(personBox);
+								$('<img src="'+bUrl+'/file/img/personal/' + suggestList[i].skin_id + '.gif"/>').css({
+									position: 'absolute',
+									left: '28px',
+									top: '21px',
+									height: '139px'
+								}).appendTo(personBox);
+								$('<p>'+suggestList[i].nickname + '</p>').css({
+									position: 'absolute',
+									left: '0px',
+									top: '153px',
+									width: '149px',
+									textAlign: 'center'
+								}).appendTo(personBox);
+								var look_button = $('<img src="'+bUrl+'/file/img/profile/check_person.png" id="' + suggestList[i].uid + '"/>').css({
+									top: '150px',
+									left: '3px',
+									width: '70px',
+									height: '70px',
+									position: 'absolute'
+								}).appendTo(personBox).click(function(){
+									var uid = $(this).attr('id');
+									window.location = bUrl + '/profile/index/' + uid + '.html';
+								});
+								var delete_button = $('<img src="'+bUrl+'/file/img/profile/add_friend.png" id="' + suggestList[i].uid + '"/>').css({
+									top: '150px',
+									left: '69px',
+									width: '70px',
+									height: '70px',
+									position: 'absolute'
+								}).appendTo(personBox).click(function(){
+									var uid = $(this).attr('id');
+									addFriend(uid);
+									alertMsg('加入成功');
+										$(this).fadeOut();
+								});							}
+							$('<img src="'+bUrl+'/file/img/profile/left.png"/>').css({
+								width: '39px',
+								height: '49px',
+								position: 'absolute',
+								top: '155px',
+								left: '0px'
+							}).click(function(){
+								if(parseInt(now_friend_bar.css("left").replace("px",""))+180 <= 0)
+								now_friend_bar.animate({
+									left: '+=180px'
+								});
+							}).appendTo(friendBox);
+							$('<img src="'+bUrl+'/file/img/profile/right.png"/>').css({
+								width: '39px',
+								height: '49px',
+								position: 'absolute',
+								top: '155px',
+								right: '0px'
+							}).click(function(){
+								if( 0-parseInt(now_friend_bar.css("left").replace("px","")) + parseInt(now_friend_box.css("width").replace("px",""))+180 <= parseInt(now_friend_bar.css("width").replace("px","")) )
+								now_friend_bar.animate({
+									left: '-=180px'
+								});
+							}).appendTo(friendBox);
+							$('<img src="'+bUrl+'/file/img/profile/left.png"/>').css({
+								width: '39px',
+								height: '49px',
+								position: 'absolute',
+								top: '420px',
+								left: '0px'
+							}).click(function(){
+								if(parseInt(suggest_friend_bar.css("left").replace("px",""))+180 <= 0)
+								suggest_friend_bar.animate({
+									left: '+=180px'
+								});
+							}).appendTo(friendBox);
+							$('<img src="'+bUrl+'/file/img/profile/right.png"/>').css({
+								width: '39px',
+								height: '49px',
+								position: 'absolute',
+								top: '420px',
+								right: '0px'
+							}).click(function(){
+								if( 0-parseInt(suggest_friend_bar.css("left").replace("px","")) + parseInt(suggest_friend_box.css("width").replace("px",""))+180 <= parseInt(suggest_friend_bar.css("width").replace("px","")) )
+								suggest_friend_bar.animate({
+									left: '-=180px'
+								});
+							}).appendTo(friendBox);
+							back.click(function(evt){
+								if($(evt.target).parents("#friendOutBox").length == 0 && evt.target.id != "friendOutBox") {
+									back.fadeOut(300,function(){
+										back.remove();
+									});
+								}
+							});
+						}).appendTo(person_cnt);
+					}
+					else if( isFriend == 0)
+					{
+						$('<img id="profile_person_friend" src="'+bUrl+'/file/img/profile/add_friend.png"/>').click(function(){
+							addFriend(userProfile.uid);
+							alertMsg('加入成功');
+							isFriend = 1;
+							$(this).fadeOut();
+						}).appendTo(person_cnt);
+					}
+					$("#profile_sub").delay(300).show().animate({
+						opacity: '1.0',
+						height: '600px'
+					},'normal','swing',function(){
+						sub_index = 2;
+						$.bar($("#bodyscroll"));
+					});
+				}
+				
+				$("#profile_sub").animate({
+					opacity: '0',
+					height: '0px'
+				},'normal','swing',person_init);
+			}
+			else
+			{
+				$("#profile_sub_cnt").empty();
+				$("#profile_sub").animate({
+					opacity: '0',
+					height: '0px'
+				},'normal','swing',function(){
+					$("#profile_sub").hide();
+					sub_index = 0;
+					$.bar($("#bodyscroll"));
+				});
+			}
+		}).mouseover(function(){
+			$(this).stop().animate({
+				top: '-=20px'
+			});
+		}).mouseleave(function(){
+			$(this).animate({
+				top: '230px'
+			});
+		});
+		$("#profile_cloth").click(function(){
+			if( itself == 1)
+			{
+				if(sub_index != 3)
+				{
+					function cloth_init()
+					{
+						var top_choose = 0;
+						var cnt_choose = 0;
+						$("#profile_sub_cnt").empty();
+						var cloth_cnt = $('<div id="profile_cloth_cnt"></div>').show().appendTo($("#profile_sub_cnt"));
+						var cloth_shop_img = $('<img src="'+bUrl+'/file/img/profile/shop/shop00.png"/>').css({
+							width: '120%',
+							position: 'absolute',
+							left: '-10%'
+						}).appendTo(cloth_cnt);
+						var buybtn = $('<img src="'+bUrl+'/file/img/profile/shop/buyBt.png"/>').css({
+							left: '553px',
+							top: '411px',
+							position: 'absolute',
+							cursor: 'pointer'
+						}).hide().click(function(){
+								if(top_choose == 0){
+									if(parseInt(userProfile.money) >= parseInt(skinShopData[cnt_choose].cost)){
+										buybtn.hide();
+										buySkin(cnt_choose);
+									}else{
+										alertMsg('你沒錢', '', 'error')
+									}
+								}else if(top_choose == 1){
+									if(parseInt(userProfile.money) >= parseInt(furnitureShopData[cnt_choose].cost)){
+										buybtn.hide();
+										buyFurniture(cnt_choose);
+									}else{
+										alertMsg('你沒錢', '', 'error');
+									}
+								}
+						}).appendTo(cloth_cnt);
+						var top_0 = $('<div id="profile_cloth_top"></div>').css({
+							left: '385px',
+							top: '0px',
+							width: '185px',
+							position: 'absolute',
+							height: '77px',
+							cursor: 'pointer'
+						}).click(function(){
+							$(".profile_cloth_shop").eq(1).hide();
+							top_choose = 0;
+							cnt_choose = 0;
+							cloth_shop_img.attr("src",bUrl+"/file/img/profile/shop/shop"+top_choose+"0.png");
+							$(".profile_cloth_shop").eq(0).show();
+							money.text(skinShopData[0].cost);
+							buybtn.hide();
+							var bought = false;
+							for(var i=0; i<skinData.length; i++){
+								if(skinData[i].sid == "0"){
+									bought = true;
+									break;
+								}
+							}
+								$('#profile_change_skin_button').remove();
+							if(bought == true){
+								var change = $('<img id="profile_change_skin_button" src="'+bUrl+'/file/img/profile/shop/use.png" />').click(function(){
+									for(var i=0; i<skinData.length; i++){
+										if(skinData[i].sid == 0){
+											changeSkin(skinData[i].pid);
+											break;
+										}
+									}
+								}).css({
+										left: '553px',
+										top: '411px',
+										position: 'absolute'
+									}).appendTo($('#profile_cloth_cnt')).show();
+							}else{
+								buybtn.show();
+							}
+
+						}).appendTo(cloth_cnt);
+						var personMoney = $('<div id="profile_cloth_money"></div>').appendTo(cloth_cnt).append("剩餘積木: " + userProfile.money).css({
+							position: 'absolute',
+							top: '113px',
+							right: '60px'
+						});
+
+
+						var bought = false;
+						for(var i=0; i<skinData.length; i++){
+							if(skinData[i].sid == "0"){
+								bought = true;
+								break;
+							}
+						}
+						$('#profile_change_skin_button').remove();
+						if(bought == true){
+							var change = $('<img id="profile_change_skin_button" src="'+bUrl+'/file/img/profile/shop/use.png" />').click(function(){
+								for(var i=0; i<skinData.length; i++){
+									if(skinData[i].sid == 0){
+										changeSkin(skinData[i].pid);
+										break;
+									}
+								}
+							}).css({
+									left: '553px',
+									top: '411px',
+									position: 'absolute'
+								}).appendTo($('#profile_cloth_cnt')).show();
+							console.dir(change);
+						}else{
+							buybtn.show();
+						}
+
+
+						var top_1 = $('<div></div>').css({
+							left: '136px',
+							top: '0px',
+							width: '185px',
+							position: 'absolute',
+							height: '77px',
+                            cursor: 'pointer'
+						}).click(function(){
+							$(".profile_cloth_shop").eq(0).hide();
+							top_choose = 1;
+							cnt_choose = 0;
+							cloth_shop_img.attr("src",bUrl+"/file/img/profile/shop/shop"+top_choose+"0.png");
+							$(".profile_cloth_shop").eq(1).show();
+							money.text(furnitureShopData[0].cost);
+							buybtn.hide();
+							var bought = false;
+							for(var i=0; i<furnitureData.length; i++){
+								if(furnitureData[i].fid == 0){
+									bought = true;
+									break;
+								}
+							}
+							if(bought == true){
+								//換裝嚕~
+							}else{
+								buybtn.show();
+							}
+								$('#profile_change_skin_button').remove();
+						}).appendTo(cloth_cnt);
+						var top_2 = $('<div></div>').css({
+							left: '640px',
+							top: '0px',
+							width: '185px',
+							position: 'absolute',
+							height: '77px',
+                            cursor: 'pointer'
+						}).click(function(){
+							$(".profile_cloth_shop").hide();
+							top_choose = 0;
+							$("#profile_sub").animate({
+								opacity: '0',
+								height: '0px'
+							},'normal','swing',function(){
+								$("#profile_sub_cnt").empty();
+								$("#profile_sub").hide();
+								sub_index = 0;
+								$.bar($("#bodyscroll"));
+							});
+						}).appendTo(cloth_cnt);
+						var money = $('<div id="profile_shop_money"></div>').append(skinShopData[0].cost).appendTo(cloth_cnt);
+
+						
+
+
+
+						var shop1 = $('<div class="profile_cloth_shop"></div>').appendTo(cloth_cnt);
+						$('<div class="profile_cloth_shopitem"  style="left:97px; top:90px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:163px; top:90px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:229px; top:90px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:294px; top:90px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:359px; top:90px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:100px; top:200px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:155px; top:200px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:210px; top:200px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:265px; top:200px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:320px; top:200px;"></div>').appendTo(shop1);
+						$('<div class="profile_cloth_shopitem"  style="left:375px; top:200px;"></div>').appendTo(shop1);
+
+						var shop2 = $('<div class="profile_cloth_shop"></div>').appendTo(cloth_cnt);
+						$('<div class="profile_cloth_shopitem"  style="left:104px; top:90px;"></div>').appendTo(shop2);
+						$('<div class="profile_cloth_shopitem"  style="left:197px; top:90px;"></div>').appendTo(shop2);
+						$('<div class="profile_cloth_shopitem"  style="left:292px; top:90px;"></div>').appendTo(shop2);
+						$('<div class="profile_cloth_shopitem"  style="left:374px; top:90px;"></div>').appendTo(shop2);
+						$('<div class="profile_cloth_shopitem"  style="left:132px; top:200px;"></div>').appendTo(shop2);
+						$('<div class="profile_cloth_shopitem"  style="left:229px; top:200px;"></div>').appendTo(shop2);
+						$('<div class="profile_cloth_shopitem"  style="left:329px; top:200px;"></div>').appendTo(shop2);
+						$(".profile_cloth_shop").hide().appendTo(cloth_cnt);
+
+						for(var i =0;i<2;i++)
+						{
+							$(".profile_cloth_shop").eq(i).children(".profile_cloth_shopitem").each(function(index){
+								$(this).attr({
+									top: i,
+									cnt: index
+								});//"top",i).attr("cnt",index);
+								$(this).click(function(){
+									$('#profile_change_skin_button').remove();
+									cnt_choose = $(this).attr("cnt");
+									top_choose = $(this).attr("top");
+									cloth_shop_img.attr("src",bUrl+"/file/img/profile/shop/shop"+top_choose+cnt_choose+".png");
+									var bought = false;
+									if(top_choose == 0){
+										money.text(skinShopData[cnt_choose].cost);
+										for(var i=0; i<skinData.length; i++){
+											if(skinData[i].sid == cnt_choose){
+												bought = true;
+												break;
+											}
+										}
+									}else if(top_choose == 1){
+										money.text(furnitureShopData[cnt_choose].cost);
+										for(var i=0; i<furnitureData.length; i++){
+											if(furnitureData[i].fid == cnt_choose){
+												bought = true;
+												break;
+											}
+										}
+									}
+
+									if(bought == false)//buy?
+									{
+										$('#profile_change_skin_button').remove();
+										buybtn.show();
+									}else{
+										buybtn.hide();
+										if(top_choose == 0){
+											var change = $('<img id="profile_change_skin_button" src="'+bUrl+'/file/img/profile/shop/use.png"/>').click(function(){
+												for(var i=0; i<skinData.length; i++){
+													if(skinData[i].sid == cnt_choose){
+														changeSkin(skinData[i].pid);
+														break;
+													}
+												}
+											}).css({
+													left: '553px',
+													top: '411px',
+													position: 'absolute'
+											}).appendTo(cloth_cnt).show();
+										}
+									}
+
+
+
+									
+								});
+							});
+						}
+						$(".profile_cloth_shop").eq(top_choose).show();
+						
+						$("#profile_sub").delay(300).show().animate({
+							opacity: '1.0',
+							height: '700px'
+						},'normal','swing',function(){
+							sub_index = 3;
+							$.bar($("#bodyscroll"));
+						});
+					}
+					$("#profile_sub").animate({
+						opacity: '0',
+						height: '0px'
+					},'normal','swing',cloth_init);
+				}
+				else
+				{
+					$("#profile_sub_cnt").empty();
+					$("#profile_sub").animate({
+						opacity: '0',
+						height: '0px'
+					},'normal','swing',function(){
+						$("#profile_sub").hide();
+						sub_index = 0;
+						$.bar($("#bodyscroll"));
+					});
+				}
+			}
+		}).mouseover(function(){
+			$(this).attr("src",bUrl + "/file/img/profile/cloth_light_cut.gif");
+		}).mouseleave(function(){
+			$(this).attr("src",bUrl + "/file/img/profile/cloth_cut.gif");
+		});
+		$("#profile_sub_close").click(function(){
+			$("#profile_sub_cnt").empty();
+			$("#profile_sub").animate({
+				opacity: '0',
+				height: '0px'
+			},'normal','swing',function(){
+				$("#profile_sub").hide();
+				sub_index = 0;
+				$.bar($("#bodyscroll"));
+			});
+		});
+
+		function BuySkinDone(data){
+			data =  jQuery.parseJSON(data);
+			skinData = data['ownedSkinList'];
+			userProfile = data['userProfile'];
+			$('#profile_cloth_top').click();
+			$('#profile_cloth_money').empty().append("剩餘積木: " + userProfile.money)
+
+		}
+
+		function BuyFurnitureDone(data){
+			data =  jQuery.parseJSON(data);
+			furnitureData = data['ownedFurnitureList'];
+			userProfile = data['userProfile'];
+			$('.hi_furniture').remove();
+			var back = $('#furmiture');
+			var location =  bUrl + "/file/img/profile/furniture/";
+			for (var i=0; i<furnitureData.length; i++){
+				$('<img class="profile_image hi_furniture" />').attr('src', location + furnitureData[i].fid + '.gif').appendTo(back);
+			}
+			$('#profile_cloth_money').empty().append("剩餘積木: " + userProfile.money)
+		}
+
+		function readMoreMessage(){
+			$("#messageBoard_get_more").remove();
+			var board = $("#profile_messageBoard_show");
+			var last_index = message_index;
+			var add = false;
+			for(var i=message_index; i<messageData.length && i<last_index + message_per_page; i++){
+				gainMessageItem(messageData[i]).appendTo(board);
+				add = true;
+				message_index = i;
+			}
+			message_index++;
+			gainGetMoreMessageBar(add).appendTo(board);
+			$.bar($("#profile_messageBoard_cnt"));
+		}
+		
+        function UpdateMessage(data){
+			message_index = 0;
+			messageData = jQuery.parseJSON(data)['message'];
+			$("#profile_messageBoard_show").empty();
+			readMoreMessage();
+			$.bar($("#profile_messageBoard_cnt"));
+        }
+
+		function gainMessageItem(data){
+			var main = $('<div class="messageBoard_show_main"></div>').css({
+				backgroundImage: 'url("' + bUrl + '/file/img/profile/message/frame_cut.png")',
+				backgroundSize: '900px 165px'
+			});
+
+			var left = $('<div class="messageBoard_show_main_left"></div>').css({
+				backgroundImage: 'url("' + bUrl + '/file/img/profile/message/head.png")',
+				backgroundSize: '750px 150px'
+			});
+			var img = $('<img class="messageBoard_show_img" />').click(function(){
+				window.location = bUrl + '/profile/index/' + data.uid_from + '.html';
+			}).attr('src', bUrl + '/file/img/personal/' + data.skin_id + '.gif');
+
+			img.appendTo(left);
+
+			var right = $('<div class="messageBoard_show_main_right"></div>');
+			var name = $('<div class="messageBoard_show_name"></div>').append(data.nickname + '　說');
+			var time = $('<div class="messageBoard_show_time"></div>').append(data.time);
+			var messageWord = $('<div class="messageBoard_show_message"></div>').append(data.message);
+
+			if(itself == '1' || data.uid_from == uidPeople){
+				var edit = $('<img class="messageBoard_show_edit" pid="' + data.pid + '"/>')
+					.attr('src', bUrl + '/file/img/profile/message/delete.png')
+					.css({
+						backgroundImage: 'url("' + bUrl + '/file/img/profile/message/delete.png")',
+						backgroundSize: '57px 28px'
+					})
+					.click(function(){
+						$(this).unbind();
+						var pid = $(this).attr('pid');
+						$(this).parent().parent().remove();
+						deleteMessage(pid);
+						$.bar($("#profile_messageBoard_cnt"));
+					}).mouseout(function(){
+						$(this).css({
+							backgroundImage: 'url("' + bUrl + '/file/img/profile/message/delete.png")'
+						});
+					}).mouseover(function(){
+						$(this).css({
+							backgroundImage: 'url("' + bUrl + '/file/img/profile/message/delete_fr.png")'
+						});
+					})
+				edit.appendTo(right);
+			}
+
+			name.appendTo(right);
+			time.appendTo(right);
+			messageWord.appendTo(right);
+
+			left.appendTo(main);
+			right.appendTo(main);
+
+			return main;
+		}
+
+		function gainGetMoreMessageBar(status){
+			$("#messageBoard_get_more").remove();
+			var bar = $('<div id="messageBoard_get_more"></div>');
+			if(status == true){
+				bar.append("閱讀更多");
+				bar.click(function(){
+					$(this).unbind();
+					$(this).empty().append("載入中");
+					loading_time = 0;
+					var small_time = Math.floor(Math.random() * 500);
+					loading_time += small_time;
+					setTimeout(haHaLoading, small_time);
+					//readMoreMessage();
+				});
+			}else{
+				bar.append("沒有更多了");
+			}
+			return bar;
+		}
+		var loading_time = 0;
+		function haHaLoading(){
+			if(loading_time >= 2000){
+				readMoreMessage();
+			}else{
+				var percent =loading_time / 2000;
+				percent = Math.round(percent*1000)/10;
+				var word = "載入中(" + percent + "%)";
+				$("#messageBoard_get_more").empty().append(word);
+				var small_time = Math.floor(Math.random() * 500);
+				loading_time += small_time;
+				setTimeout(haHaLoading, small_time);
+			}
+		}
+
+        function getMessage(){
+            sendData('get_message', '', UpdateMessage);
+        }
+
+        function addMessage(message){
+            sendData('add_message', 'message=' + message, getMessage);
+        }
+
+        function changeUserProfile(column, to){
+            var data = 'column' + column + '&to=' + to;
+            sendData('update_user_profile', data);
+        }
+
+		function addFriend(uid_friend){
+			sendData('add_friend', 'uid_friend=' + uid_friend);
+		}
+
+		function removeFriend(uid_friend){
+			sendData('remove_friend', 'uid_friend=' + uid_friend);
+		}
+
+		function buyFurniture(fid){
+			sendData('buy_furniture', 'fid=' + fid, BuyFurnitureDone);
+		}
+
+		function buySkin(sid){
+			sendData('buy_skin', 'sid=' + sid, BuySkinDone);
+		}
+
+		function changeSkin(pid){
+			sendData('change_skin', 'pid=' + pid, DoneChangeSkin);
+		}
+
+		function DoneChangeSkin(data){
+			userProfile = jQuery.parseJSON(data)['userProfile'];
+			$('#profile_person').attr('src', bUrl + '/file/img/personal/' + userProfile.skin_id + '.gif');
+		}
+
+		function changeFurniture(pid_before, pid_after){ // -1:nothing
+			sendData('update_furniture_status', 'pid_before=' + pid_before + '&pid_after=' + pid_after);
+		}
+
+		function deleteMessage(pid){
+			sendData('delete_message', 'pid=' + pid);
+		}
+
+        function sendData(action, data, callBack){
+            data = data + '&s=' + s + '&uid=' + userProfile.uid + '&a=' + action;
+            var url = bUrl+'/profile/' + ajaxAction[action] + '.html';
+            $.post(url, data, callBack);
+        }
+
+	};
+
+})(jQuery);
+
+
+(function($)
+{
+    $(window).load(function()
+    {
+		$.profile();
+    });
+})(jQuery);

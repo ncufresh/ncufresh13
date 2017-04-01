@@ -1,0 +1,1137 @@
+
+//RMC
+(function($)
+{
+    $.RMC = function(){
+        //常數
+        var FPS = 60;//每秒偵數
+        var timePulse = 15;//思考時脈  標準15
+        var areaX = 0.7*$(window).width();//允許範圍X 
+        var areaY = 0.7*$(window).height();//允許範圍Y
+
+        if(areaX*0.8 <= areaY){
+            areaY = areaX*0.8 ;
+        }else{
+            areaX = 1.25*areaY;
+        }
+
+        if ((areaX>1600)) {
+            areaX = 1600;
+            areaY = 1280;
+        }
+        var limitAreaX = 0.1*areaX;//警戒區域X
+        var limitAreaY = 0.13*areaY;//警戒區域Y
+        // var limitAreaX = 2000;//警戒區域X
+        // var limitAreaY = 2000;//警戒區域Y
+        var accelerateArea = 4//加速度範圍 
+        var hitRange =  20;//攻擊範圍
+        var hitDamage = 2000;//攻擊傷害
+        var straightStart = 500;//起始直線常數(低<<--機率-->>高)上限10000 優先
+        var curveStart = 10;//起始曲線常數(低<<--機率-->>高)上限10000
+        var liveStart = 0;//起始生存常數(低<<--機率-->>高)上限1000
+        var speedStart = 0;//起始移動速度
+        var rotateStart = 100;//起始迴轉角度
+        var eatArea = (areaX+areaY)/6;//食物參數
+        var fleeArea = (areaX+areaY)/7;//危險參數
+        var attackArea = (areaX+areaY)/8;//攻擊參數
+        var HPStart = 1000;//起始生命值;
+        var expStart = 5000;//起始經驗值
+        var statusStart = 1;//起始狀態 驚嚇 正常 死亡
+        var bornHowmany = 5;//生幾隻
+        var mouseCD = false;//游標冷卻
+        var name =false;
+        var frame1 = new Image();
+        frame1.src = bUrl+"/file/rmc/bg3.jpg";
+       
+
+        //食物變數
+        var howManyFood = 0;//食物數量
+        var foodDurability = new Array();//食物耐久度
+        var foodPosx = new Array();//食物X位置
+        var foodPosY = new Array();//食物Y位置
+        var foodAngle = new Array();//食物角度
+        var foodSize = new Array();//食物大小
+        var foodLV = new Array();//食物等級
+
+        var nowHowmany = 10;//起始數量
+        var howManyRoach = 0;//初始蟑螂數量
+        var positionX = 0;//游標X位置
+        var positionY = 0;//游標Y位置
+        var marker;
+        //蟑螂變數
+        var numLimit = 150;
+        var generation = 1;
+        var oestrus = false;
+        var parents = "";//姓氏
+        var myName = new Array();//我的名字
+        var surname = new Array();//我的姓氏
+        var myLover = new Array();//我的戀人
+        var myEnemy = new Array();//我的敵人
+        var roachSize = new Array();//蟑螂大小
+        var roachAD = new Array();//蟑螂攻擊力
+        var hitCD = new Array();//被擊冷卻
+        var speedLimit = new Array();//最高移動速度
+        var alive = new Array();//生命狀態
+        var roachLV =new Array();//蟑螂等級
+        var roachExp = new Array();//蟑螂經驗值
+        var roachHP = new Array();//蟑螂血量
+        var roachX = new Array();//蟑螂位置X
+        var roachY = new Array();//蟑螂位置Y
+        var roachA = new Array();//蟑螂位置ANGLE
+        var roachV = new Array();//蟑螂速度
+        var rotateLimit = new Array();//旋轉角度限制 
+        //var brainTemp = new Array();//蟑螂大腦暫存值
+        var styleTemp = new Array();//生存參數暫存值
+        var moveParam = new Array();//移動參數暫存值
+        //var Action = new Array();
+        var moveCaller = new Array();//移動呼叫器
+        var status = new Array();//狀態
+       
+
+        var needExp = new Array();//升等所需經驗
+        needExp[1] =    40000;//一等所需經驗
+        needExp[2]=     80000;//二等所需經驗
+        needExp[3]=    160000;//三等所需經驗
+        needExp[4]=    320000;//四等所需經驗
+        needExp[5]=    640000;//五等所需經驗
+        needExp[6]=   1280000;//六等所需經驗
+        needExp[7]=   2560000;//七等所需經驗
+        needExp[8]=   5120000;//八等所需經驗
+        needExp[9]=  10240000;//九等所需經驗
+        needExp[10]= 20480000;//十等所需經驗
+        needExp[11]=10000000000000000000;//十一等所需經驗
+
+        var growSize = new Array();//蟑螂大小
+        growSize[1] = 50;//一等蟑螂大小
+        growSize[2] = 50;//二等蟑螂大小
+        growSize[3] = 50;//三等蟑螂大小
+        growSize[4] = 50;//四等蟑螂大小
+        growSize[5] = 50;//五等蟑螂大小
+        growSize[6] = 50;//六等蟑螂大小
+        growSize[7] = 50;//七等蟑螂大小
+        growSize[8] = 50;//八等蟑螂大小
+        growSize[9] = 50;//九等蟑螂大小
+        growSize[10]= 50;//十等蟑螂大小
+        growSize[11]= 50;//十一等蟑螂大小
+     
+        var speedLimitLV = new Array();//蟑螂等級速度分類
+        speedLimitLV[1] =    5;//一等最大速度
+        speedLimitLV[2] =    5;//二等最大速度
+        speedLimitLV[3] =    6;//三等最大速度
+        speedLimitLV[4] =    6;//四等最大速度
+        speedLimitLV[5] =    7;//五等最大速度
+        speedLimitLV[6] =    7;//六等最大速度
+        speedLimitLV[7] =    7;//七等最大速度
+        speedLimitLV[8] =    8;//八等最大速度
+        speedLimitLV[9] =    8;//九等最大速度
+        speedLimitLV[10] =   9;//十等最大速度
+        speedLimitLV[11] =  10;//十一等最大速度
+       
+        var attackDamageLV = new Array();//蟑螂傷害
+        attackDamageLV[1] =   200;//一等蟑螂傷害
+        attackDamageLV[2] =   300;//二等蟑螂傷害
+        attackDamageLV[3] =   400;//三等蟑螂傷害
+        attackDamageLV[4] =   500;//四等蟑螂傷害
+        attackDamageLV[5] =   800;//五等蟑螂傷害
+        attackDamageLV[6] =  1500;//六等蟑螂傷害
+        attackDamageLV[7] =  2000;//七等蟑螂傷害
+        attackDamageLV[8] =  2500;//八等蟑螂傷害
+        attackDamageLV[9] =  3000;//九等蟑螂傷害
+        attackDamageLV[10] = 4000;//十等蟑螂傷害
+        attackDamageLV[11] = 6000;//十一等蟑螂傷害
+
+        var eatSpeedLV = new Array();//蟑螂吃速
+        eatSpeedLV[1] =  1000;//一等蟑螂吃速
+        eatSpeedLV[2] =  2000;//二等蟑螂吃速
+        eatSpeedLV[3] =  3000;//三等蟑螂吃速
+        eatSpeedLV[4] =  4000;//四等蟑螂吃速
+        eatSpeedLV[5] =  5000;//五等蟑螂吃速
+        eatSpeedLV[6] =  6000;//六等蟑螂吃速
+        eatSpeedLV[7] =  7000;//七等蟑螂吃速
+        eatSpeedLV[8] =  8000;//八等蟑螂吃速
+        eatSpeedLV[9] =  9000;//九等蟑螂吃速
+        eatSpeedLV[10]= 10000;//十等蟑螂吃速
+        eatSpeedLV[11]= 20000;//十一等蟑螂吃速
+
+        var imageSize = 100;//圖片大小
+        var img = new Array();
+
+        //等級相關
+        for(var i = 1 ; i <= 13 ; i++){
+             img[i] = new Array(2);
+             img[i][0] = new Image();
+             img[i][1] = new Image();
+             img[i][2] = new Image();
+         }
+
+        img[1][0].src = bUrl+"/file/rmc/shockRoach1.png";//一等驚嚇蟑螂
+        img[2][0].src = bUrl+"/file/rmc/shockRoach2.png";//二等驚嚇蟑螂
+        img[3][0].src = bUrl+"/file/rmc/shockRoach3.png";//三等驚嚇蟑螂
+        img[4][0].src = bUrl+"/file/rmc/shockRoach4.png";//四等驚嚇蟑螂
+        img[5][0].src = bUrl+"/file/rmc/shockRoach5.png";//五等驚嚇蟑螂
+        img[6][0].src = bUrl+"/file/rmc/shockRoach6.png";//六等驚嚇蟑螂
+        img[7][0].src = bUrl+"/file/rmc/shockRoach7.png";//七等驚嚇蟑螂
+        img[8][0].src = bUrl+"/file/rmc/shockRoach8.png";//八等驚嚇蟑螂
+        img[9][0].src = bUrl+"/file/rmc/shockRoach9.png";//九等驚嚇蟑螂
+        img[10][0].src = bUrl+"/file/rmc/shockRoach10.png";//十等驚嚇蟑螂
+        img[11][0].src = bUrl+"/file/rmc/shockRoach11.png";//十等驚嚇蟑螂
+     
+
+        img[1][1].src = bUrl+"/file/rmc/cuteRoach1.png";//一等活蟑螂
+        img[2][1].src = bUrl+"/file/rmc/cuteRoach2.png";//二等活蟑螂
+        img[3][1].src = bUrl+"/file/rmc/cuteRoach3.png";//三等活蟑螂
+        img[4][1].src = bUrl+"/file/rmc/cuteRoach4.png";//四等活蟑螂
+        img[5][1].src = bUrl+"/file/rmc/cuteRoach5.png";//五等活蟑螂
+        img[6][1].src = bUrl+"/file/rmc/cuteRoach6.png";//六等活蟑螂
+        img[7][1].src = bUrl+"/file/rmc/cuteRoach7.png";//七等活蟑螂
+        img[8][1].src = bUrl+"/file/rmc/cuteRoach8.png";//八等活蟑螂
+        img[9][1].src = bUrl+"/file/rmc/cuteRoach9.png";//九等活蟑螂
+        img[10][1].src = bUrl+"/file/rmc/cuteRoach10.png";//十等活蟑螂
+        img[11][1].src = bUrl+"/file/rmc/cuteRoach11.png";//十一等活蟑螂
+        
+
+        img[1][2].src = bUrl+"/file/rmc/bloodRoach1.png";//一等死蟑螂
+        img[2][2].src = bUrl+"/file/rmc/bloodRoach2.png";//二等死蟑螂
+        img[3][2].src = bUrl+"/file/rmc/bloodRoach3.png";//三等死蟑螂
+        img[4][2].src = bUrl+"/file/rmc/bloodRoach4.png";//四等死蟑螂
+        img[5][2].src = bUrl+"/file/rmc/bloodRoach5.png";//五等死蟑螂
+        img[6][2].src = bUrl+"/file/rmc/bloodRoach6.png";//六等死蟑螂
+        img[7][2].src = bUrl+"/file/rmc/bloodRoach7.png";//七等死蟑螂
+        img[8][2].src = bUrl+"/file/rmc/bloodRoach8.png";//八等死蟑螂
+        img[9][2].src = bUrl+"/file/rmc/bloodRoach9.png";//九等死蟑螂
+        img[10][2].src = bUrl+"/file/rmc/bloodRoach10.png";//十等死蟑螂
+        img[11][2].src = bUrl+"/file/rmc/bloodRoach11.png";//十一等死蟑螂
+
+        img[12][2].src = bUrl+"/file/rmc/cake.png";//蛋糕
+        img[13][2].src = bUrl+"/file/rmc/banana.png";//香蕉
+        
+        var choose = 1;//使用哪隻拖鞋
+        var mouse = new Image();//游標
+        var weapen = new Array(2);
+        for(var i = 1 ; i <= 3; i ++){
+            weapen[i] = new Array(2);
+        }
+        weapen[1][0] = "/file/rmc/bw1.gif";//藍白拖
+        weapen[2][0] = "/file/rmc/rw1.gif";//紅白拖
+        weapen[3][0] = "/file/rmc/gw1.gif";//綠白拖
+
+
+        weapen[1][1] = "/file/rmc/bw2.gif";//藍白拖攻擊
+        weapen[2][1] = "/file/rmc/rw2.gif";//紅白拖攻擊
+        weapen[3][1] = "/file/rmc/gw2.gif";//黃白拖攻擊
+
+
+        mouse.src = bUrl+weapen[choose][0];//使用的拖鞋
+
+        var back = $('<div ONDRAGSTART="window.event.returnValue=false" onSelectStart="event.returnValue=false" ONCONTEXTMENU="window.event.returnValue=false"></div>').css({
+            //背景div
+            //cursor:'none',
+            overflow:'hidden',
+           //  user-select: 'none',
+           // -o-user-select:'none',
+           // -moz-user-select: 'none',
+           // -khtml-user-select: 'none',
+           // -webkit-user-select: 'none',
+            width:  '100%',
+            height: '100%',
+            position: 'fixed',
+            background: 'rgba(0,0,0,0.5)',
+            left: '0px',
+            top: '0px',
+            textAlign: 'center',
+            zIndex: '20'
+        }).appendTo("body").fadeIn();
+
+        var UI = $('<div id="divUser"></div>').css({
+            //使用者介面
+            //overflow:'hidden',
+            //cursor:'none',
+            padding: '2%',
+            top: '5%',
+            margin: 'auto',
+            position: 'relative',
+            width: 1.4*areaX+'px',
+            height: areaY+'px',
+            textAlign: 'right'
+        }).appendTo(back);
+
+
+        var box = $('<div id="divShow"></div>').css({
+            //backgroundColor:'black',
+            //cursor:'none',
+            display: 'inline-block',
+            width: areaX+'px',
+            height: areaY+'px'         
+        }).appendTo(UI);
+
+         //圖片區塊
+           var canvas = $('<canvas width="'+areaX+'" height="'+0.95*areaY+'" id="canvas"></canvas>').css({
+            cursor:'none'   
+           }).appendTo(box);
+               //backgroundColor:'white'     
+            var canvasGet = document.getElementById("canvas");
+            var context = canvasGet.getContext('2d');
+
+       var background = $('<img src ="'+bUrl+'/file/rmc/bg1.png"></img>').css({
+            cursor: 'none',
+            position: 'relative',
+            left:'2%',
+            top:'-105%',
+            margin: 'auto',    
+            width:'100%'
+       }).appendTo(UI);
+
+
+        var marker = $('<div id="divMarker"><br /></div>').css({
+            //cursor: 'none',
+            overflow:'hidden',
+            background: 'rgba(0,0,0,0.5)',
+            //backgroundColor: 'blue',
+            padding:'1%',
+            textAlign: 'left',
+            position: 'relative',
+            left: '2%',
+            top: '-70%',
+            display: 'none',
+            // margin: 'auto',
+            height: '80%',
+            width:'25%'
+       }).appendTo(back);
+
+        var bar = $('<div id="bar"></div>').css({
+            //cursor: 'none',
+            overflow:'hidden',
+            position:'relative',
+            //backgroundColor: 'blue',
+            textAlign: 'center',
+            height: '100%',
+            width:'100%'
+       }).appendTo(marker);
+
+
+        var markerContent = $('<div id="divCon"></div>').css({
+            position: 'absolute',
+            top:'0px',
+            //backgroundColor: 'blue',
+            padding:'1%',
+            textAlign: 'left',
+            height: '300px',
+            width:'90%'
+       }).appendTo(bar);
+
+       $.bar($("#bar"));
+
+        back.click(function(evt){
+            //離開
+          if($(evt.target).parents("#divShow").length == 0 && evt.target.id != "divShow") {
+             // back.fadeOut();
+          }
+        });
+
+
+        //鍵盤事件
+
+
+
+       $(document).keyup(function(event){
+
+            if(event.keyCode == 79){
+                if($("#divMarker").css("display")=="none"){
+                    name = true;
+                    marker = setInterval(function(){refreshMarket()},1000/FPS); //開始刷新畫面
+                    $("#divMarker").show(); 
+                }else{
+                    name = false;
+                    clearInterval(marker);//停止動作
+                    $("#divMarker").hide();
+                }
+            }
+
+            if (event.keyCode == 27 || event.keyCode == 69) {
+                //按ESC跳出遊戲
+                back.unbind();
+                back.fadeOut();
+            }else if( limitAreaX < positionX && areaX-limitAreaX > positionX
+                    && limitAreaY < positionY && areaY-limitAreaY > positionY){
+                if(event.keyCode == 81){
+                    //按Q放置食物
+                    beAFood(positionX,positionY,60,0,7500,12);
+                }
+
+
+                if(event.keyCode == 87){
+                    //按W放置食物
+                    beAFood(positionX,positionY,30,roachA[howManyRoach-1],15000,13);
+                }
+
+                if(event.keyCode == 49){
+                    //按1換BW
+                    choose=1;
+                }else if(event.keyCode == 50){
+                    //按2換RW
+                    choose=2;
+                }else if(event.keyCode == 51){
+                    //按3換GW
+                    choose=3;
+                }
+                mouse.src = bUrl+weapen[choose][0];
+
+
+                if(event.keyCode == 82){
+                    if(howManyRoach<10){
+                        generation++;
+                        nowHowmany = howManyRoach + 5;
+                        parents = "PlayerIsGod";
+                        creatRoach(howManyRoach,positionX,positionY);
+                    }
+                }
+
+                
+            }
+        });
+
+        //創造蟑螂
+        function creatRoach(num,x,y){
+            //console.log("yes");
+            //迴圈創造全部蟑螂
+             howManyRoach = nowHowmany ;
+            for (var i = num; i < howManyRoach; i++) {
+              var siteX = x;//起始x位置
+              var siteY = y;//起始y位置
+              var originAngle = ((Math.floor((Math.random()*360)+1))*(Math.PI)/180);//起始面對角度
+              alive[i] = true;//是否活著
+              rotateLimit[i] = rotateStart;//迴轉角度限制
+              moveParam[i] = new Array(2);//移動方式
+              //brainTemp[i] = new Array(4);
+              //Action[i] = false;
+              var idChoose = Math.floor(Math.random()*50);//名字
+              if(generation == 1){
+                    var sur = Math.floor(Math.random()*10);//姓氏
+                  switch (sur)
+                {
+                    case 0:
+                        surname[i]="V";
+                        break;
+                    case 1:
+                        surname[i]="冗";
+                        break;
+                    case 2:
+                        surname[i]="安安";
+                        break;
+                    case 3:
+                        surname[i]="GG";
+                        break;
+                    case 4:
+                        surname[i]="煞氣";
+                        break;
+                    case 5:
+                        surname[i]="不懂一個";
+                        break;
+                    case 6:
+                        surname[i]="不要哭";
+                        break;
+                    case 7:
+                        surname[i]="神雷瑟雷希";
+                        break;
+                    case 8:
+                        surname[i]="火神BWE";
+                        break;
+                    case 9:
+                        surname[i]="哈比";
+                        break;
+                    }
+                }else{
+                    surname[i] = parents;
+                }
+              
+
+              switch (idChoose)
+            {
+                case 0:
+                    myName[i]="Randomize ";
+                    break;
+                case 1:
+                    myName[i]="帥哥羊皮 ";
+                    break;
+                case 2:
+                    myName[i]="豬頭痞子 ";
+                    break;
+                case 3:
+                    myName[i]="團購肥皂 ";
+                    break;
+                case 4:
+                    myName[i]="暗影狂徒 ";
+                    break;
+                case 5:
+                    myName[i]="無盡領域 ";
+                    break;
+                case 6:
+                    myName[i]="渴望的愛 ";
+                    break;
+                case 7:
+                    myName[i]="旋轉豆漿 ";
+                    break;
+                case 8:
+                    myName[i]="GreenXp ";
+                    break;
+                case 9:
+                    myName[i]="流砂之嵐 ";
+                    break;
+                case 10:
+                    myName[i]="阿慶老哥 ";
+                    break;
+                case 11:
+                    myName[i]="法菲特 ";
+                    break;
+                case 12:
+                    myName[i]="頑皮豹笑你 ";
+                    break;
+                case 13:
+                    myName[i]="就這樣狂暴 ";
+                    break;
+                case 14:
+                    myName[i]="鬆散硬硬 ";
+                    break;
+                case 15:
+                    myName[i]="破音蛋蛋 ";
+                    break;
+                case 16:
+                    myName[i]="雙層肥肉 ";
+                    break;
+                case 17:
+                    myName[i]="坎伯特大帝 ";
+                    break;
+                case 18:
+                    myName[i]="普希金魔王 ";
+                    break;
+                case 19:
+                    myName[i]="普同侍衛 ";
+                    break;
+                case 20:
+                    myName[i]="普歐屎神 ";
+                    break;
+                case 21:
+                    myName[i]="冗廷 ";
+                    break;
+                case 22:
+                    myName[i]="冗佳 ";
+                    break;
+                case 23:
+                    myName[i]="冗綠 ";
+                    break;
+                case 24:
+                    myName[i]="宂伊 ";
+                    break;
+                case 25:
+                    myName[i]="冗昌 ";
+                    break;
+                case 26:
+                    myName[i]="冗硬 ";
+                    break;
+                case 27:
+                    myName[i]="冗僕 ";
+                    break;
+                case 28:
+                    myName[i]="冗菇 ";
+                    break;
+                case 29:
+                    myName[i]="冗Q ";
+                    break;
+                case 30:
+                    myName[i]="黑暗奧斯卡 ";
+                    break;    
+                case 31:
+                    myName[i]="魔幻修飾者 ";
+                    break;    
+                case 32:
+                    myName[i]="書卷的怨靈 ";
+                    break;    
+                case 33:
+                    myName[i]="禁地創造者 ";
+                    break;    
+                case 34:
+                    myName[i]="酷炫北極熊 ";
+                    break;    
+                case 35:
+                    myName[i]="媽 ";
+                    break;    
+                case 36:
+                    myName[i]="歐西里斯 ";
+                    break;    
+                case 37:
+                    myName[i]="菲尼克斯 ";
+                    break;
+                case 38:
+                    myName[i]="小昌昌 ";
+                    break;    
+                case 39:
+                    myName[i]="昌昌昌 ";
+                    break;    
+                case 40:
+                    myName[i]="軒豪 ";
+                    break;    
+                case 41:
+                    myName[i]="毅翔 ";
+                    break;
+                case 42:
+                    myName[i]="雅芹 ";
+                    break;
+                case 43:
+                    myName[i]="偉哲 ";
+                    break;
+                case 44:
+                    myName[i]="尻澤瑞爾 ";
+                    break;
+                case 45:
+                    myName[i]="給我們口巴 ";
+                    break;
+                case 46:
+                    myName[i]="輝哥OP ";
+                    break;
+                case 47:
+                    myName[i]="清流羊羊巨人 ";
+                    break;
+                case 48:
+                    myName[i]="快手佳 ";
+                    break;
+                case 49:
+                    myName[i]="快腳佳 ";
+                    break;
+
+              }
+
+              //myName[i] = generation+"_"+i;
+              myEnemy[i
+              ]=-1;
+              status[i] = statusStart;
+              roachAD[i]= attackDamageLV[1];
+              roachSize[i]=growSize[1];
+              hitCD[i]=false;//設定起始被擊否              
+              styleTemp[i]=liveStart;//設定起始生存方式
+              moveParam[i][0]=straightStart;//設定起始移動方式_直線
+              moveParam[i][1]=curveStart;//設定起始移動方式_曲線
+              speedLimit[i]=speedLimitLV[1];//設定起始移動速度上限
+              roachExp[i]=expStart;//設定起始經驗值
+              roachHP[i]=HPStart;//設定起始生命值
+              roachLV[i]=1;//設定起始等級
+              roachX[i] = siteX;//設定起始X位置給蟑螂
+              roachY[i] = siteY;//設定起始Y位置給蟑螂
+              roachA[i] = originAngle;//設定起始角度給蟑螂
+              roachV[i] = speedStart;//設定起始速度給蟑螂
+              callRoach(i,siteX,siteY);//呼叫蟑螂開始              
+            }        
+        }
+
+
+
+        //呼叫蟑螂
+        function callRoach(num,siteX,siteY){
+            moveCaller[num] = setInterval(function(){roachLivdStyle(num)},1000/timePulse);//蟑螂開始動作
+            setInterval(function(){drawCanvas()},1000/FPS); //開始刷新畫面
+            //判斷是否擊殺蟑螂
+            $("div").mousedown(function(){
+                mouse.src = bUrl+weapen[choose][1];
+                if(((roachX[num]+roachSize[num]+hitRange) > positionX)&&(positionX > (roachX[num]-roachSize[num]-hitRange))&&
+                    ((roachY[num]+roachSize[num]+hitRange) > positionY)&&(positionY > (roachY[num]-roachSize[num]-hitRange))){
+                    //若游標擊中以蟑螂中心往外之攻擊範圍內區域且血量為零呼叫則擊殺方法
+                    if(!hitCD[num]){
+                        if(parseInt(roachHP[num])>0){
+                            status[num]=0;
+                            roachHP[num]-=hitDamage;
+                            hitCD[num]=true;
+                            console.log(status[num]);
+                        }
+                        if(parseInt(roachHP[num])<=0){
+                            roachDel(num);//擊殺方法  
+                        }
+                        //console.log(num," "+roachHP[num],howManyRoach);
+                    }
+                }
+
+                
+                mouseCD = true;                
+                setTimeout(function(){
+                   mouse.src = bUrl+weapen[choose][0];
+                   mouseCD = false;   
+                   hitCDR();
+                }, 100);
+            });
+        }
+
+
+        //marker
+        function refreshMarket(){
+            $("#divCon").empty();
+            $("<table style=border: 'none';  width: '100%'; align='left' cellpadding='10' cellspacing='0' frame='void' rules='none'><tbody id = 'table'></table></table>").appendTo("#divCon");
+            $("<tr><td><font color='red'>ID</font></td> <td><font color='red'>HP</font></td> <td><font color='red'>EXP</font></td></tr>").appendTo("#table");
+
+            for(var i = 0 ; i < howManyRoach ; i++){
+
+                $("<tr><td><font color='red'>"+myName[i]+"_"+surname[i]+"</font></td> <td><font color='red'>"+roachHP[i]+"</font></td> <td><font color='red'>"+roachExp[i]+"</font></td></tr>").appendTo("#table");
+            }
+            
+        }
+
+        //獲得游標位置
+        function getMousePosition(){
+            $("div").mousemove(function(e){
+                positionX = e.pageX;//取得游標X位置
+                positionY = e.pageY;//取得游標Y位置
+                if (positionX < 0){positionX = 0;}
+                if (positionY < 0){positionY = 0;}
+                positionX -= $("#divShow").offset().left;//轉換成相同座標系
+                positionY -= $("#divShow").offset().top;//轉換成相同座標系
+            });
+        }
+
+        //獲得目標物相對蟑螂的距離D
+        function getDistance(num,posX,posY){
+            var tempX = posX - roachX[num];//取得X差值
+            var tempY = -(posY - roachY[num]);//取得Y差值
+            var tempD = Math.sqrt((tempX*tempX)+(tempY*tempY));//以畢德哥拉斯求得距離
+            return tempD;
+        }
+
+        //獲得目標物相對蟑螂的角度
+        function getAngle(num,posX,posY){
+            var tempX = posX - roachX[num];//取得X差值
+            var tempY = -(posY - roachY[num]);//取得Y差值
+            var tempD = Math.sqrt((tempX*tempX)+(tempY*tempY));//以畢德哥拉斯求得距離
+            if(tempD==0){
+                 return roachA[num]+Math.PI;
+            }else{
+                var cos = tempX/tempD;
+            }//換算成cos值
+            
+            var tempAC = Math.acos(cos);//使用acos轉換成弧度
+            var tempAngle = tempAC;
+
+            if(tempY<0){
+                tempAngle *=(-1);
+            }
+            return tempAngle;
+        }
+
+
+
+        //蟑螂死亡後消除
+        function roachDel(num){
+                beAFood(roachX[num],roachY[num],roachSize[num]-10,roachA[num],roachExp[num],roachLV[num]);
+            for(var i = 0 ; i < howManyRoach ; i++){
+                if (myEnemy[i] == num){
+                    myEnemy[i] = howManyRoach-1;
+                }else if(myEnemy[i] > num){
+                    myEnemy[i]-=1;
+                }
+            }
+
+            for(var i = num ; i < howManyRoach-1 ; i++){
+                myEnemy[i] = myEnemy[i+1];
+                status[i] = status[i+1];
+                hitCD[i] = hitCD[i+1];//被擊冷卻
+                speedLimit[i] = speedLimit[i+1];//最高移動速度
+                roachLV[i] =roachLV[i+1] ;//蟑螂等級
+                roachExp[i] =roachExp[i+1];//蟑螂經驗值
+                roachHP[i] = roachHP[i+1];//蟑螂血量
+                roachX[i] = roachX[i+1];//蟑螂位置X
+                roachY[i] = roachY[i+1];//蟑螂位置Y
+                roachA[i] =  roachA[i+1];//蟑螂位置ANGLE
+                roachV[i] = roachV[i+1];//蟑螂速度
+                rotateLimit[i] = rotateLimit[i+1];//旋轉角度限制 
+                // brainTemp[i] = brainTemp Array();//蟑螂大腦暫存值
+                myName[i] = myName[i+1];//名字
+                styleTemp[i] = styleTemp[i+1];//生存參數暫存值
+                moveParam[i] = moveParam[i+1];//移動參數暫存值
+                // Action[i] = Action Array();
+               
+
+                //console.log(i);
+            }
+
+            howManyRoach--;
+            
+            roachX[howManyRoach] = 10000;//蟑螂位置X
+            roachY[howManyRoach] = 10000;//蟑螂位置Y
+            
+            clearInterval(moveCaller[howManyRoach]);//停止動作
+        }
+
+        //成為食物方法
+        function beAFood(posX,posY,size,angle,exp,LV){
+            //console.log(posX,posY);
+            foodPosx[howManyFood] = posX;
+            foodPosY[howManyFood] = posY;
+            foodSize[howManyFood] = size;
+            foodAngle[howManyFood] = angle;
+            foodDurability[howManyFood] = exp;
+            foodLV[howManyFood] = LV;
+            howManyFood++;
+        }
+
+
+        //食物偵測已吃完
+        function foodHasEaten(){
+            for(var i = 0; i<parseInt(howManyFood); i++){
+                if(foodDurability[i]<=0){
+                   foodDel(i);
+                }     
+            }
+        }
+
+        //消滅食物
+        function foodDel(num){
+            for(var i = num ; i < howManyFood-1 ; i++){
+                foodPosx[i] = foodPosx[i+1];
+                foodPosY[i] = foodPosY[i+1];
+                foodSize[i] = foodSize[i+1];
+                foodAngle[i] = foodAngle[i+1];
+                foodDurability[i] = foodDurability[i+1];
+                foodLV[i] = foodLV[i+1]; 
+            }
+            howManyFood--;
+        }
+
+
+        //食物腐敗
+        function foodRotten(){
+            for(var i = 0 ; i < howManyFood ; i++){
+                foodDurability[i] -= 5;
+            }
+        }
+
+        //刷新冷卻狀態
+        function hitCDR(){
+            
+            for (var i = 0; i < howManyRoach; i++) {
+                status[i] = 1;
+                hitCD[i] = false;
+            }
+        }
+
+        //升級方法
+        function levelUp(num){
+            if(roachV[num]!=11){
+                roachLV[num]++;
+                roachAD[num] = attackDamageLV[roachLV[num]];
+                speedLimit[num] = speedLimitLV[roachLV[num]];
+                roachSize[num] = growSize[roachLV[num]];
+                roachHP[num] += 400*roachLV[num];
+            }
+        }
+
+        //分派敵人
+        function getEnemy(){
+            if(howManyRoach>3){
+                
+                for(var i = 0 ; i < howManyRoach ; i++ ){
+                    //myEnemy[i]=howManyRoach-1;
+                    while(true){
+                        var who = Math.floor(Math.random()*howManyRoach);//產出敵人
+                        if(who != i){
+                            myEnemy[i] = who;
+                            break;
+                        } 
+                    }
+                }
+            }else if(howManyRoach>1){
+                getLover();
+               
+            }
+        }
+
+        //分派戀人
+        function getLover(){
+            if(howManyRoach > 1){
+                for(var i = 0 ; i < howManyRoach ; i++ ){
+                    while(true){
+                        var who = Math.floor(Math.random()*howManyRoach);//產出戀人
+                        if(who != i){
+                            myLover[i] = who;
+                            break;
+                        } 
+                    }
+                }                
+            }
+        }
+
+        //世代交替
+        function getBaby(num){
+            //alert("HIHI");
+            if(oestrus&& num==myLover[myLover[num]]){
+                myLover[num]=-1;
+                myLover[myLover[num]]=-1;
+                if(howManyRoach<numLimit){  
+
+                    nowHowmany = howManyRoach+bornHowmany;
+                    generation++;
+                    parents = surname[num];
+                    creatRoach(howManyRoach,roachX[num],roachY[num]); 
+                }
+            }
+            oestrus = false;
+        }
+
+
+        //蟑螂生活方式
+         function roachLivdStyle(num){
+            roachExp[num]+=10;
+            if(roachExp[num]>=needExp[roachLV[num]]){
+                    levelUp(num);    
+            }
+            var brain = (Math.floor((Math.random()*1000)+1));//產出隨機思考值
+            var foodDistanceTemp=10000;
+            var foodNum = 0;
+            //計算四周食物距離
+            for(var i = 0; i<parseInt(howManyFood); i++){
+                if(getDistance(num,foodPosx[i],foodPosY[i])<foodDistanceTemp){
+                    foodDistanceTemp=getDistance(num,foodPosx[i],foodPosY[i]);
+                    foodNum = i;
+                }  
+            }            
+            if(getDistance(num,positionX,positionY)<fleeArea) {
+                //若游標在危險區域內優先逃跑
+                roachFlee(num);//呼叫逃跑方法
+            }else if(num==myLover[myLover[num]]){
+                //若發現戀人且無危險優先繁殖
+                    oestrus = true;
+                    roachCopulation(num);
+                
+            }else if(getDistance(num,roachX[myEnemy[num]],roachY[myEnemy[num]]) < attackArea){
+                //若發現敵人且無危險優先攻擊
+                roachAttack(num);//呼叫攻擊方法
+            }else if(foodDistanceTemp < eatArea){
+                //若發現食物且無危險優先覓食
+                roachEat(num,foodNum);//呼叫覓食方法
+            }else{
+                //判斷思考值是 移動 逃跑
+                if(1000 >= brain && brain > styleTemp[num]){
+                    styleTemp[num]=liveStart;
+                    styleTemp[num]+=5;
+                    roachMove(num);//呼叫移動方法
+                }else if(styleTemp[num]>= brain && brain >0){
+                    styleTemp[num]=liveStart;
+                    styleTemp[num]=0;
+                    roachFlee(myEnemy[num]);//呼叫逃跑方法
+                }
+            }
+           // brainTemp[num][0] = brain;
+        }
+
+        //蟑螂交配方式
+        function  roachCopulation(num){
+            rotateLimit[num] = rotateStart;//將迴轉值重置
+            var radian = getAngle(num,roachX[myLover[num]],roachY[myLover[num]]);//角度面向游標
+            roachA[num] = radian;//設定角度
+            var angle = (Math.floor(Math.random()*rotateLimit[num]))-(rotateLimit[num]/2);//獲得隨機角度
+            radian = angle*Math.PI/180;//轉換為弧度
+            roachA[num]+=radian;//設定角度
+            if(getDistance(num,roachX[myLover[num]],roachY[myLover[num]])>roachSize[myLover[num]]){
+                var accelerate = (Math.floor((Math.random()*(1*accelerateArea))))-((0.3*accelerateArea)/2);//獲得加速度值                
+                roachV[num] += accelerate;//加速
+                var vectorX = roachV[num]*Math.cos(roachA[num]);//計算X向量
+                var vectorY = -roachV[num]*Math.sin(roachA[num]);//計算Y向量
+                roachX[num]+=vectorX;//設定X目標位置
+                roachY[num]+=vectorY;//設定Y目標位置
+            }else{
+               //交配方法
+               getBaby(num);
+            }
+        }
+
+        //蟑螂戰鬥方式
+        function roachAttack(num){
+            rotateLimit[num] = rotateStart;//將迴轉值重置
+            var radian = getAngle(num,roachX[myEnemy[num]],roachY[myEnemy[num]]);//角度面向游標
+            roachA[num] = radian;//設定角度
+            var angle = (Math.floor(Math.random()*rotateLimit[num]))-(rotateLimit[num]/2);//獲得隨機角度
+            radian = angle*Math.PI/180;//轉換為弧度
+            roachA[num]+=radian;//設定角度
+            if(getDistance(num,roachX[myEnemy[num]],roachY[myEnemy[num]])>roachSize[myEnemy[num]]){
+                var accelerate = (Math.floor((Math.random()*(1*accelerateArea))))-((0.3*accelerateArea)/2);//獲得加速度值                
+                roachV[num] += accelerate;//加速
+                var vectorX = roachV[num]*Math.cos(roachA[num]);//計算X向量
+                var vectorY = -roachV[num]*Math.sin(roachA[num]);//計算Y向量
+                roachX[num]+=vectorX;//設定X目標位置
+                roachY[num]+=vectorY;//設定Y目標位置
+            }else if (!hitCD[myEnemy[num]]){
+                hitCD[myEnemy[num]] = true;
+                status[myEnemy[num]]=0;
+                roachHP[myEnemy[num]]-=roachAD[num];
+                setTimeout(function(){
+                   hitCDR();
+                }, 400);
+                
+                if(roachHP[[myEnemy[num]]] <= 0){
+                    roachDel(myEnemy[num]);
+                }
+            }
+        }
+
+        //蟑螂覓食方式
+        function roachEat(num,foodNum){        
+            rotateLimit[num] = rotateStart;//將迴轉值重置
+            var radian = getAngle(num,foodPosx[foodNum],foodPosY[foodNum]);//角度面向游標
+            roachA[num] = radian;//設定角度
+            var angle = (Math.floor(Math.random()*rotateLimit[num]))-(rotateLimit[num]/2);//獲得隨機角度
+            radian = angle*Math.PI/180;//轉換為弧度
+            roachA[num]+=radian;//設定角度
+            if(getDistance(num,foodPosx[foodNum],foodPosY[foodNum])>foodSize[foodNum]){
+                var accelerate = (Math.floor((Math.random()*(1*accelerateArea))))-((0.3*accelerateArea)/2);//獲得加速度值                
+                roachV[num] += accelerate;//加速
+                var vectorX = roachV[num]*Math.cos(roachA[num]);//計算X向量
+                var vectorY = -roachV[num]*Math.sin(roachA[num]);//計算Y向量
+                roachX[num]+=vectorX;//設定X目標位置
+                roachY[num]+=vectorY;//設定Y目標位置
+            }else{
+                foodDurability[foodNum]-=eatSpeedLV[roachLV[num]];
+                roachExp[num]+=eatSpeedLV[roachLV[num]];
+
+                if(roachExp[num]>=needExp[roachLV[num]]){
+                    levelUp(num);    
+                }
+            }
+        }
+        
+
+        //蟑螂逃跑方式
+        function roachFlee(num){    
+            rotateLimit[num] = rotateStart;//將迴轉值重置
+            var accelerate = (Math.floor((Math.random()*(1*accelerateArea))))-((0.3*accelerateArea)/2);//獲得加速度值
+            var radian = getAngle(num,positionX,positionY)+Math.PI;//角度背向游標
+            roachA[num] = radian;//設定角度
+            var angle = (Math.floor(Math.random()*rotateLimit[num]))-(rotateLimit[num]/2);//獲得隨機角度
+            radian = angle*Math.PI/180;//轉換為弧度
+            roachA[num]+=radian;//設定角度
+              
+            roachV[num] += accelerate;//加
+            var vectorX = roachV[num]*Math.cos(roachA[num]);//計算X向量
+            var vectorY = -roachV[num]*Math.sin(roachA[num]);//計算Y向量
+            roachX[num]+=vectorX;//設定X目標位置
+            roachY[num]+=vectorY;//設定Y目標位置
+
+        }
+
+        //蟑螂移動方式
+        function roachMove(num){
+            if(status[num]==0){
+                var accelerate = (Math.floor((Math.random()*(2*accelerateArea))));//獲得加速度
+            }else{
+                
+                var accelerate = (Math.floor((Math.random()*(0.7*accelerateArea))))-((0.3*accelerateArea)/2);//獲得加速度
+            }
+  
+            var brain = (Math.floor((Math.random()*10000)+1));//獲得移動類型指令
+            //判斷移動指令為 直線 曲線 靜止
+            if(10000 >= brain && brain > moveParam[num][0]){
+                if (10000-moveParam[num][0]>1) {
+                    moveParam[num][0]+=1;//調整移動參數
+                };
+                roachV[num] += accelerate;//加速
+                var vectorX = roachV[num]*Math.cos(roachA[num]);//計算X向量
+                var vectorY = -roachV[num]*Math.sin(roachA[num]);//計算Y向量
+                roachX[num]+=vectorX;//設定X目標位置
+                roachY[num]+=vectorY;//設定Y目標位置
+            }else if(moveParam[num][0] >= brain && brain > moveParam[num][1]){
+                if (moveParam[num][0]-moveParam[num][1]>100) {
+                    moveParam[num][0]-=100;//調整移動參數
+                };
+                var angle = (Math.floor(Math.random()*rotateLimit[num]))-(rotateLimit[num]/2);//獲得隨機角度
+                var radian = angle*Math.PI/180;//轉換為弧度
+                roachV[num] += accelerate;//加速
+                rotateLimit[num] = rotateStart;//重置迴轉限置
+                roachA[num]+=radian;//設定角度
+                var vectorX = roachV[num]*Math.cos(roachA[num]);//計算X向量
+                var vectorY = -roachV[num]*Math.sin(roachA[num]);//計算Y向量
+                roachX[num]+=vectorX;//設定X目標位置
+                roachY[num]+=vectorY;//設定Y目標位置
+            }else{
+                //靜止
+                roachV[num] = 0;//速度歸零
+            }
+        }
+        
+
+        function drawCanvas(){
+
+            //刷新畫面
+            context.clearRect(0, 0, areaX, areaY);
+            context.save();//儲存畫筆
+            context.drawImage(frame1,areaX/15, 0,0.9*areaX,areaY);
+            context.restore();//重置畫筆
+
+            for(var i = 0; i<parseInt(howManyFood); i++){
+                    context.save();//儲存畫筆
+                    context.translate(foodPosx[i],foodPosY[i]);//設定畫筆位置
+                    context.rotate(-foodAngle[i]);//旋轉角度                 
+                    context.drawImage(img[foodLV[i]][2],-(imageSize/2), -(imageSize/2));//選擇食物圖片                    
+                    context.restore();
+            }
+
+
+            //位置限制器,避免蟑螂一去不復返   
+            for (var i =  0; i < howManyRoach; i++) {
+                if(roachX[i]<(limitAreaX)){
+                    roachX[i]=limitAreaX;
+                    rotateLimit[i]=360;
+                }else if(roachX[i]>areaX-limitAreaX){
+                    roachX[i]=areaX-limitAreaX;
+                    rotateLimit[i]=360;
+                }
+                if(roachY[i]<(limitAreaY)){
+                    roachY[i]=limitAreaY;
+                    rotateLimit[i]=360;
+
+                }else if(roachY[i]>(areaY-limitAreaY)){
+                    roachY[i]=areaY-limitAreaY;
+                    rotateLimit[i]=360;
+                }
+
+                //速度限制器
+                if(roachV[i]<0){
+                    //速度下限
+                    roachV[i]=0;
+                }else if(roachV[i]>speedLimit[i]){
+                    //速度上限
+                    roachV[i]=speedLimit[i];
+                }
+
+                context.save();//儲存畫筆
+                context.translate(roachX[i],roachY[i]);//設定畫筆位置
+                context.rotate(-roachA[i]);//旋轉角度      
+                context.drawImage(img[roachLV[i]][status[i]],-(imageSize/2), -(imageSize/2));//選擇蟑螂圖片
+                context.restore();//重置畫筆
+                
+                if(name){
+                    context.save();//儲存畫筆
+                    context.translate(roachX[i]-35,roachY[i]-85);//設定畫筆位置
+                    context.fillStyle="#FF0000";
+                    context.font="20px Georgia";
+                    context.fillText(myName[i]+"_"+surname[i],10,50);
+                    context.restore();//重置畫筆
+                }
+
+            }
+
+                context.save();//儲存畫筆
+                context.translate(positionX,positionY);//設定畫筆位置
+                context.drawImage(mouse,-80, -80);
+                context.restore();//重置畫筆
+                
+
+
+            
+            //console.log(roachX[i],roachY[i]);
+        }
+
+        getMousePosition();//開始偵測游標位置
+        setInterval(function(){foodRotten()},100);//開始偵測食物是否被吃掉了
+        setInterval(function(){foodHasEaten()},50);//開始偵測食物是否被吃掉了
+        setInterval(function(){getLover()},120*10000/(2*timePulse));//開始分派戀人
+        setInterval(function(){getEnemy()},180*10000/(3*timePulse));//開始分派敵人
+        //setInterval(function(){hitCDR()},200);//開始刷新被擊冷卻
+
+        creatRoach(0,areaX/2,areaY/2);//開始創造蟑螂
+    }
+})(jQuery);
+
+$.RMC();

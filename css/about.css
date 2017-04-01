@@ -1,0 +1,224 @@
+/*the div including other divs*/
+#space
+{
+	width: 88%;
+	height: 578px;
+	margin: 0 auto;
+	margin-right: 6%;
+	position: relative;
+	z-index: 1;
+	background-image: url("../file/img/about/AboutUs_background.png");
+}
+/*the div of dialog*/
+#dialog
+{
+	width: 96.2%;
+	height: 466px;
+	background-image: url("../file/img/about/Dialog.png");
+	margin-left: 16.5px;
+	margin-top: 12px;
+	position: absolute;
+	overflow: hidden;
+	z-index: 5;
+	text-align: center;
+}
+/*the div of masks on base image*/
+#mask
+{
+	height: 500px;
+	position: absolute;
+	z-index: 2;
+	display: none;
+	top: -5px;
+}
+/*each field to put tetris on to match*/
+.match
+{
+	width: 85px;
+	height: 60px;
+	position: absolute;
+	z-index: 0;
+	background: black;
+	opacity: 0;
+}
+/*the div of the field matched to admin*/
+#mdadmin
+{
+	left: 83px;
+	top: 409px;
+}
+/*the div of the field matched to program*/
+#mdprogram
+{
+	left: 192px;
+	top: 434px;
+}
+/*the div of the field matched to design*/
+#mddesign
+{
+	left: 411px;
+	top: 408px;
+}
+/*the div of the field matched to media*/
+#mdmedia
+{
+	left: 511px;
+	top: 436px;
+}
+/*the div of the field matched to project*/
+#mdproject
+{
+	left: 629px;
+	top: 436px;
+}
+/*the div of the field matched to photo*/
+#mdphoto
+{
+	left: 792px;
+	top: 381px;
+}
+/*the divs be able to be dragged*/
+.shape
+{
+	position: absolute;
+	z-index: 3;
+	cursor: all-scroll;
+}
+/*the div of tetris admin*/
+#dadmin
+{
+	width: 81px;
+	height: 53px;
+	top: 508px;
+	left: 48px;
+}
+/*the div of tetris program*/
+#dprogram
+{
+	width: 79px;
+	height: 53px;
+	top: 508px;
+	left: 161px;
+}
+/*the div of tetris design*/
+#ddesign
+{
+	width: 81px;
+	height: 53px;
+	top: 508px;
+	left: 286px;
+}
+/*the div of tetris media*/
+#dmedia
+{
+	width: 53px;
+	height: 53px;
+	top: 508px;
+	left: 406px;
+}
+/*the div of tetris project*/
+#dproject
+{
+	width: 80px;
+	height: 55px;
+	top: 508px;
+	left: 513px;
+}
+/*the div of tetris photo*/
+#dphoto
+{
+	width: 79px;
+	height: 53px;
+	top: 508px;
+	left: 633px;
+}
+/*the div of tetris deload*/
+#ddeload
+{
+	cursor: pointer;
+	width: 60px;
+	height: 18px;
+	top: 530px;
+	left: 766px;
+}
+/*the div of space of dialog*/
+#frame
+{
+	width: 90%;
+	height: 411px;
+	margin: 0 auto;
+	margin-top: 28px;
+	position: relative;
+	top: 0px;
+	overflow: hidden;
+}
+/*the div to put content*/
+#introduction
+{
+	top: 0px;
+	width: 100%;
+	margin: 0 auto;
+	position: absolute;
+	word-wrap: break-word; 
+	word-break: normal;
+	line-height: 200%;
+	font-family: 微軟正黑體;
+}
+/*the img of loading*/
+#loading
+{
+	width: 20%;
+	margin: 0 auto;
+}
+/*the tag h1 in div introduction*/
+#introduction h1
+{
+	font-size: 40px;
+	font-weight: bolder;
+	text-align: center;
+}
+/*the tag p in div introduction*/
+#introduction p
+{
+	font-size: 20px;
+}
+/*the tag a in div introduction*/
+#introduction a
+{
+	text-decoration: none;
+}
+/*the class of photo*/
+.photo
+{
+	height: 400px;
+	display: none;
+}
+/*the img of photo_1*/
+#photo_1_big
+{
+	display: inline;
+}
+/*the div of box*/
+#box
+{
+	float: right;
+	width: 110px;
+	height: 400px;
+	overflow: hidden;
+	position: relative;
+}
+/*the div of list*/
+#list
+{
+	height: 1709px;
+	top: 0px;
+	position: absolute;
+	float: left;
+	width: 80px;
+}
+/*the class item*/
+.item
+{
+	width: 80px;
+	cursor: pointer;
+}

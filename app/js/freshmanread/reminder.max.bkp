@@ -1,0 +1,93 @@
+(function($)
+{
+    $.reminder = function(){
+      var counter=0 ;
+      
+      $("#freshmanImg").click(
+        function () {
+          counter++ ;
+          if(counter==1){
+            $("#freshmanImg").delay(600) ;
+            $("#active,#relation,#document").fadeOut(500).animate({opacity:'0'},500) ;
+            
+            $("#freshmanImg").animate({ height:'300px',opacity:'0'},750) ;
+            $("#freshmanImg").fadeOut(750) ;
+
+             setTimeout(action,1500) ;
+             setTimeout(function(){actionAjax('Freshman');},1500) ;
+          }
+      });
+
+      $("#activeImg").click(
+        function () {
+          counter++ ;
+          if(counter==1){
+            $("#activeImg").delay(600) ;
+            $("#freshman,#relation,#document").fadeOut(500).animate({opacity:'0'},500) ;
+            
+            $("#activeImg").animate({height:'300px', opacity:'0'},750) ;
+            $("#activeImg").fadeOut(500) ;
+
+            setTimeout(action,1500) ;
+            setTimeout(function(){actionAjax('Active');},1500) ;
+          }
+      });
+
+      $("#relationImg").click(
+        function () {
+          counter++ ;
+          if(counter==1){
+            $("#relationImg").delay(600) ;
+            $("#freshman,#active,#document").fadeOut(500).animate({opacity:'0'},500) ;
+            
+            $("#relationImg").animate({ height:'300px',opacity:'0'},750) ;
+            $("#relationImg").fadeOut(500) ;
+
+            setTimeout(action,1500) ;
+            setTimeout(function(){actionAjax('Relation');},1500) ;
+          }
+      });
+      $("#documentImg").click(
+        function () {
+          counter++
+          if(counter==1){
+            $("#documentImg").delay(600) ;
+            $("#freshman,#active,#relation").fadeOut(500).animate({opacity:'0'},500) ;
+            
+            $("#documentImg").animate({ height:'300px',opacity:'0'},750) ;
+            $("#documentImg").fadeOut(500) ;
+
+            setTimeout(action,1500) ;
+            setTimeout(function(){actionAjax('Document');},1500) ;
+          }
+      });
+      function action(){
+        jQuery.ajax({'success':function(data){  
+                                         $("#navigation").hide() ;                                   
+                                         $("#navigation").html(data).fadeIn(700).animate({opacity: 1.0},700);
+                                         $.getScript(bUrl+"/app/js/freshmanread/reminder2.js");
+                                     },
+                       'url': UrlReminder2 ,
+                       'cache':false});
+      }
+
+      function actionAjax(receiptor){
+        jQuery.ajax({'success':function(data){   
+                                         $("#ajaxDiv").hide() ;                                  
+                                         $("#ajaxDiv").html(data).fadeIn(700).animate({opacity: 1.0},700);
+                                         $.getScript(bUrl+"/app/js/freshmanread/ajaxADFR.js");
+                                     },
+                       'url': UrlAjax ,
+                       'data' : { 'son' : receiptor } ,
+                       'cache':false});
+      }
+    }
+})(jQuery);
+
+(function($)  
+{
+    $(document).ready(function()
+    {
+       $.reminder();
+    });
+})(jQuery);

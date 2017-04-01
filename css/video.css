@@ -1,0 +1,379 @@
+.vid{
+	position:relative;
+	z-index:2;
+	background-color: blue;
+	width:176px;
+	margin:0px 5px;
+}
+#videoall{
+	height:auto;
+}
+#video{
+	font: bold 17px "Microsoft JhengHei";
+	width:580px;
+	float:left;
+	height:auto;
+	margin-left:1.5%;
+}
+#vidtv {
+	margin-top: 10px;
+	margin-left: 0px;
+	width: 100%;
+	height: 30px;
+	float: left;
+}
+#vidinfo{
+	position:relative;
+	margin-top:10px;
+	margin-bottom: 10px;
+	float:left;
+	height:160px;
+	width:100%;
+	overflow:visible;
+	z-index:2;
+}
+#vidinfoimg{
+	position:absolute;
+	height:160px;
+	width:580px;
+	z-index:1;
+}
+#vidloading{
+	margin-left:auto;
+	margin-right:auto;
+	height:100%;
+}
+#vidinfotitle {
+	font: bold 22px "Microsoft JhengHei";
+	position:absolute;
+	z-index:2;
+	margin-top: 8px;
+	height: 26%;
+	width: 55%;
+	margin-left: 15%;
+	float: left;
+}
+#vidinfoview {
+	font: bold 22px "Microsoft JhengHei";
+	position: relative;
+	z-index: 2;
+	margin-top: 8px;
+	float: right;
+	margin-right: 4%;
+	height: 30%;
+	width: 10%;
+}
+#vidothers{
+	height:140px;
+	position: relative;
+	overflow:hidden;
+	width:100%;
+	height:310px;
+}
+#vidothersimg{
+	position: absolute;
+	width:100%;
+	height:310px;
+}
+#vidothersout {
+	position: relative;
+	left: 10px;
+	top: 10px;
+	width: 560px;
+	height: 74%;
+	border-radius: 5px;
+	overflow: hidden;
+}
+
+
+#vidothersin{
+	position:relative;
+	background-color:blue;
+	left:0px;
+	width:1488px;
+	height: 180px;
+}
+.divvid{
+	position: relative;
+	width:auto;
+	float:left;
+	height:100%;
+	background-color: black;
+	z-index: 1;
+}
+.vidothersname{
+	position:relative;
+	z-index:2;
+	height:30%;
+	top:-12px;
+	width:100%;
+}
+.vidblur{
+	height:100%;
+	width:100%;
+	position:absolute;
+	top:0px;
+	z-index:20;
+}
+#vidotherstitle{
+	position:relative;
+	width: 35%;
+	height: 17%;
+	margin-left: auto;
+	margin-right: auto;
+}
+#vidotherstitleimg{
+	width: 100%;
+	height: 100%;
+}
+
+#viddisplay{
+	float:left;
+	height:100%;
+	width:100%;
+
+}
+#viddisplayimg{
+	position:absolute;
+	width:580px;
+	height:335px;
+	z-index: 0;
+}
+#viddisplayin{
+	position:relative;
+	height: 315px;
+	width:auto;
+	margin:10px;
+	background-color: black;
+	z-index:5;
+}
+#loadingimg{
+	position:relative;
+	display: block;
+	margin-left: auto;
+    margin-right: auto;
+    top: 100px;
+}
+#vidtalk {
+	position: absolute;
+	z-index: 2;
+	float: left;
+	margin-left: 17%;
+	height: 59%;
+	width: 72%;
+	top: 34%;
+	overflow: hidden;
+}
+#vidtalkimg {
+	z-index: 2;
+	position: absolute;
+	top: 38%;
+	right: -5%;
+	height: 70%;
+	float: right;
+}
+#msg{
+	font:  15px "Microsoft JhengHei";
+	background-image: url('../file/img/video/msgdisplay.png');
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+	float:left;
+	margin-left: 15px;
+	width:37%;
+	height:825px;
+}
+#msgtitle{
+	width: 52%;
+	height: 8%;
+	margin-top:10px;
+	margin-right: auto;
+	margin-left: auto;
+}
+#msgtitleimg{
+	width: 100%;
+	height: 100%;
+}
+#msgtaarea{
+	height:124px;
+}
+#msgta{
+	resize:none;
+	width:70%;
+	margin-left:10%;
+	margin-top:10%;
+
+}
+#userimg {
+	margin-top: 20px;
+	width: 70px;
+	margin-left: 17px;
+}
+#msgloading{
+	position:relative;
+	margin-bottom:10px;
+	margin-right:10px;
+	margin-left:10px;
+	height:121.25px;
+
+}
+#msgloadingimg {
+	position: relative;
+	left: 47px;
+	top: 45px;
+	background-color: transparent;
+}
+#msgaddin {
+	height: 150px;
+	width: 94%;
+	margin-left: 10px;
+	margin-top: 10px;
+
+}
+#msgaddinimg{
+	position:absolute;
+	height: 150px;
+	width: 348px;
+	z-index: 1;
+}
+#msgaddout {
+	background-image: url('../file/img/video/addmsgout.png');
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	height: 150px;
+	width: 94%;
+	margin-left: 10px;
+	margin-top: 10px;
+
+}
+#msgnotloginimg{
+	width:100%;
+	height:100%;
+}
+#msgaddleft{
+	position:absolute;
+	width:30%;
+	height: 150px;
+	float:left;
+	z-index: 5;
+}
+
+#msgaddright {
+	position: relative;
+	width: 70%;
+	height: 150px;
+	float: right;
+	z-index: 5;
+}
+
+#msgsubmit{
+	height:26px;
+	margin-top: -6px;
+	margin-right:12px;
+	float:right;
+}
+
+#msgdisplay{
+	height:552px;
+	width:100%;
+	overflow:hidden;
+	margin-top:10px; 
+	position: relative;
+}
+
+#msgdisplayin{
+	top: 0px;
+	position: relative;
+	overflow: hidden;
+	float:left;
+	width:93%;
+
+}
+#msgline{
+	background-color: black;
+	width:90%;
+	height:5px;
+	border-radius: 5px;
+	margin-top:10px;
+	margin-left:auto;
+	margin-right:auto;
+}
+#divbox{
+	position:relative;
+	background-color:rgb(255,207,138);
+	width:100%;
+	left:0px;
+	height:50px;
+	border-radius:2px;
+	z-index: 3;
+
+}
+#divfront{
+	background-image: url('../file/img/video/vidbarfront.png');
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+	height:300%;
+	cursor:pointer;
+}
+#divbox{
+	top:'10px';
+}
+
+.msgblock{
+	position:relative;
+	margin-bottom:10px;
+	margin-right:10px;
+	margin-left:10px;
+	background-image: url('../file/img/video/addmsg.png');
+	background-size:100% 100%;
+	background-repeat:no-repeat;
+	height:121.25px;
+}
+.msgp {
+	left: 36%;
+	word-wrap: break-word;
+	position: absolute;
+	width: 53%;
+	top: 29px;
+	height: 55%;
+	float: left;
+}
+.msgn {
+	top: 10px;
+	float: left;
+	position: relative;
+	left: 46px;
+}
+.msgi {
+	height: 90px;
+	left: 22px;
+	top: 5px;
+	position: relative;
+	float: left;
+}
+.msgq{
+	top: 10px;
+	float: left;
+	position: relative;
+	left: 46px;
+}
+.msgt {
+	position: absolute;
+	float: right;
+	height: 15px;
+	top: 103px;
+	right: 15px;
+}
+.msgk{
+	position: relative;
+	height:20px;
+}
+#moremsg{
+	width:181px;
+	margin-left:auto;
+	margin-right:auto;
+	height:49px;
+}
+#moremsgimg{
+	margin-left:auto;
+	margin-right:auto;
+}

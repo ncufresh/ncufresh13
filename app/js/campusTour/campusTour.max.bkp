@@ -1,0 +1,178 @@
+//the javascript file of CampusTour
+(function($)
+{
+	$.campusTour = function(options)
+	{
+		var choose;
+		var sw;
+		var light;
+		//change base map when left buttons are clicked
+		$(".place img").click(function()
+		{
+			choose = $(this).attr('id');
+			changeMap(choose);
+			lightButton(choose);
+		});
+		//set initial buttons images
+		$(".place img").each(function()
+		{	
+			choose = $(this).attr('id');
+			if (choose != 'Dormitory') 
+			{
+				$(this).attr("src",bUrl+"/file/img/campusTour/button_left/button_" + choose + ".png");
+			}
+
+			else
+			{
+				$(this).attr("src",bUrl+"/file/img/campusTour/button_left/button_" + choose + "_light.png");
+			}
+		});
+		//set initial map images
+		$("#map").children().each(function()
+		{
+			choose = $(this).attr('id');
+			if (choose != 'basemap') 
+			{
+				$(this).attr("src",bUrl + "/file/img/campusTour/map/" + choose + "_base.png");
+			}
+
+			else
+			{
+				$(this).attr("src",bUrl + "/file/img/campusTour/map/" + choose + ".png");
+			}
+		});
+		//change place button when mouse over and out
+		$("#map img").mouseover(function()
+		{
+			choose = $(this).attr('id');
+			sw = 'on';
+			changeButton(choose, sw);
+		}).mouseout(function()
+		{
+			sw = 'off';
+			changeButton(choose, sw);
+		});
+		//change to the second page when place buttons are clicked
+		$("#map img").click(function()
+		{
+			choose = $(this).attr('id');
+			choosePlace(choose);
+		});
+		//return to the first page when back button is clicked
+		$("#return").click(function()
+		{	
+            $("#space").fadeOut("slow");
+            $(".inside").fadeOut("slow");
+            $("#all").animate({marginLeft: '1%'}, "slow");
+		});
+	}
+	//function to create googlemap of street
+	function showMap(lat, lon, heading, zoom) 
+	{
+		var fenway = new google.maps.LatLng(lat,lon);
+
+		var panoramaOptions = {
+		    position: fenway,
+		    pov: {
+		    	zoom: parseInt(zoom),
+		    	heading: parseInt(heading),
+		    	pitch: 0
+		    }
+		};
+		var panorama = new google.maps.StreetViewPanorama(document.getElementById('google'),panoramaOptions);
+	}
+	//function to change base map
+	function changeMap(choose)
+	{
+		closeALL();
+		$(".map").attr("style", "display:none");
+		$(".m" + choose).attr("style", "display:block");
+	}
+	//function to show detail of place
+	function showDetail(choose)
+	{				//ajax send succeed
+		jQuery.ajax(
+			{
+				'success': function(html){
+		                    	$("#detail").html(html.html);
+		                        showMap(html.panorama.lat, html.panorama.lon, html.panorama.heading, html.panorama.zoom);
+		     					$(".detail").hide().fadeIn("slow",function()
+		     					{
+									$.bar($("#space"));
+		                    	});
+		                        $("#return").fadeIn("slow");
+		                        },
+                'dataType': 'json',
+                'data': {'select': choose},
+                'url':	motiondetail,
+                //ajax is sending
+                'beforeSend': function(){
+                			$("#detail").show();
+                			$("#google").remove();
+                			$('<img id="loading" src=' + bUrl + '/file/img/campusTour/loading.gif>').appendTo($("#detail"));
+                			},
+                //the page loads complete
+                'complete': function(){
+                			$("#loading").remove();
+                			},
+                'error': function(){
+                			alertMsg('Error loading','','error');
+                			},
+                'cache':false});
+	}
+	//function to chosse place to change
+	function choosePlace(choose)
+	{
+		if(choose != 'basemap')
+		{
+			showDetail(choose);
+			$("#all").animate({marginLeft: '-95%'}, "slow");
+		}
+	}
+	//function to close all images
+	function closeALL()
+	{
+		$(".mDormitory").attr("style", "display:none");
+		$(".mSport").attr("style", "display:none");
+		$(".mLandscape").attr("style", "display:none");
+		$(".mMeal").attr("style", "display:none");
+		$(".mBuilding").attr("style", "display:none");
+		$(".mDepartment").attr("style", "display:none");
+	}
+	//function to change place buttons
+	function changeButton(choose, sw)
+	{
+		if(choose != 'basemap')
+		{
+			if (sw == 'on')
+			{
+				$("#" + choose).css("z-index", "2");
+				$("#" + choose).attr("src", bUrl+"/file/img/campusTour/map/"+choose+"_hover.png");
+			}
+
+			else if (sw == 'off')
+			{	
+				$("#" + choose).css("z-index", "1");
+				$("#" + choose).attr("src", bUrl+"/file/img/campusTour/map/"+choose+"_base.png");
+			}
+		}
+	}
+	//function to light button pressed
+	function lightButton(choose)
+	{	
+		$(".place img").each(function()
+		{
+			$(this).attr("src",bUrl+"/file/img/campusTour/button_left/button_" + $(this).attr('id') + ".png");
+		});
+
+		$("#" + choose).attr("src", bUrl+"/file/img/campusTour/button_left/button_"+choose+"_light.png");
+	}
+})(jQuery);
+
+(function($)
+{
+    $(document).ready(function()
+    {	
+		$.campusTour();
+    });
+})(jQuery);

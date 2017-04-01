@@ -1,0 +1,303 @@
+(function($)
+{
+
+    $.lightbox = function(options)
+    {
+      $("#back").fadeIn('slow');
+
+		var box = $('<div id="divShow"></div>').css({
+			// background: '#C8C8C8',
+			top: '50px',
+			margin: '0 auto',
+			position: 'relative',
+			height: '70%',
+			width: '70%',
+			overflow: 'hidden'
+		}).html(options);
+		$("#back").html(box);
+		$.bar($("#divShow"));
+	}
+
+    $.ajaxADFR = function(){
+
+      var isIE = navigator.userAgent.search("MSIE") > -1;  
+
+		$("#fre_leftcolumn,#fre_rightcolumn").children().each(function(){
+			$(this).click(function(){
+				select($(this).attr("id"),$(this).parent().parent().attr("id"));
+			});
+
+			if (!isIE){
+				$(this).hover(function(){$(this).css("text-shadow", "#87CEEB 1px 3px")
+				},function(){$(this).css("text-shadow", "1px 2px 0px rgba(0, 0, 0, 0.24)")});
+			}
+
+			////判斷如果是IE
+			else if (isIE) {
+				$(this).hover(function(){$(this).css("color", "#0044FF")
+				},function(){$(this).css("color", "#000000")});
+			}
+
+			$("#nav_freshman").css("background-color","#FFCB7D") ;
+			$("#nav_freshman").css("border-radius","10px 10px 0px 0px") ;
+			$("#nav_active,#nav_document,#nav_relation").css("background","none") ;
+			$("#ajaxDiv").css("border-radius","0px 10px 10px 10px") ;
+
+		});//each()讓所有的子項目都做這件事
+		//attr()改變attribute的屬性
+
+		$("#enr_leftcolumn,#enr_rightcolumn").children().each(function(){
+			$(this).click(function(){
+				select($(this).attr("id"),$(this).parent().parent().attr("id"));
+			});
+			if (!isIE){
+				$(this).hover(function(){$(this).css("text-shadow", "#00C4C4 1px 3px")
+				},function(){$(this).css("text-shadow", "1px 2px 0px rgba(0, 0, 0, 0.24)")});
+			}
+			else if (isIE) {
+				$(this).hover(function(){$(this).css("color", "#002CA5")
+				},function(){$(this).css("color", "#000000")});
+			}
+		});
+
+		$("#act_leftcolumn,#act_rightcolumn").children().each(function(){
+			$(this).click(function(){
+				select($(this).attr("id"),$(this).parent().parent().attr("id"));
+			});
+			// $(this).click(function(){$.jumpWindow($("#data"))});//lightbox的效果
+			if (!isIE){
+				$(this).hover(function(){$(this).css("text-shadow", "#FFE600 1px 3px")
+				},function(){$(this).css("text-shadow", "1px 2px 0px rgba(0, 0, 0, 0.24)")});
+			}
+			else if (isIE) {
+				$(this).hover(function(){$(this).css("color", "#FFBF00")
+				},function(){$(this).css("color", "#000000")});
+			}
+
+			$("#nav_active").css("background-color","#FFCB7D") ;
+			$("#nav_active").css("border-radius","10px 10px 0px 0px") ;
+			$("#nav_document,#nav_freshman,#nav_relation").css("background","none") ;
+			$("#ajaxDiv").css("border-radius","10px 10px 10px 10px") ;
+		});
+
+
+		$("#doc_leftcolumn,#doc_rightcolumn").children().each(function(){
+			$(this).click(function(){
+				select($(this).attr("id"),$(this).parent().parent().attr("id"));
+			});
+			if (!isIE){
+				$(this).hover(function(){$(this).css("text-shadow", "#44FF00 1px 3px")
+				},function(){$(this).css("text-shadow", "1px 2px 0px rgba(0, 0, 0, 0.24)")});
+			}
+			else if (isIE) {
+				$(this).hover(function(){$(this).css("color", "#006900")
+				},function(){$(this).css("color", "#000000")});
+			}
+
+			$("#nav_document").css("background-color","#FFCB7D") ;
+			$("#nav_document").css("border-radius","10px 10px 0px 0px") ;
+			$("#nav_active,#nav_freshman,#nav_relation").css("background","none") ;
+			$("#ajaxDiv").css("border-radius","10px 10px 10px 10px") ;
+		});
+
+
+		$("#rel_leftcolumn,#rel_rightcolumn").children().each(function(){
+			$(this).click(function(){
+				select($(this).attr("id"),$(this).parent().parent().attr("id"));
+			});
+			if (!isIE){
+				$(this).hover(function(){$(this).css("text-shadow", "#FF0033 1px 2px")
+				},function(){$(this).css("text-shadow", "1px 2px 0px rgba(0, 0, 0, 0.24)")});
+			}
+			else if (isIE) {
+				$(this).hover(function(){$(this).css("color", "#FF0033")
+				},function(){$(this).css("color", "#000000")});
+			}
+
+			$("#nav_relation").css("background-color","#FFCB7D") ;
+			$("#nav_relation").css("border-radius","10px 10px 0px 0px") ;
+			$("#nav_active,#nav_freshman,#nav_document").css("background","none") ;
+			$("#ajaxDiv").css("border-radius","10px 0px 10px 10px") ;
+		});
+
+		function select(receiptor,category){
+			jQuery.ajax({'success':function(data){
+				var hi = $('<div id="dataHi"></div>').css({
+					background: '#D3FEFF',
+					top: '0px',
+					margin: '0 auto',
+					position: 'absolute',
+//					height: '100%',
+					width: '100%'
+				}).html(data);
+				var hi2 = $('<div id="hi2"></div>').css({
+					height: "100%",
+					overflow: "hidden"
+			}).append(hi);
+				console.dir(hi2);
+				$.jumpWindow(hi2);
+				$.bar($('#hi2'));
+				//$("<div id='data'></div>").html(data).appendTo($('#wrapped'));
+			},
+				'type': 'GET',
+				'url': UrlData ,
+				'data' : { 'receipt' : receiptor , 'category' : category } ,
+				'cache':false,
+				'complete': function(){
+					// $("#data").css({'background-color':'#C8C8C8'}),
+					// $("#data").empty() ;
+				}
+			}).done(function(){
+//					console.log('done');
+//					$.lightbox($('#data'));
+//					$.bar($("#divShow"));
+				});
+		}
+
+		$("#freshButtom").click(function() {
+			choose('Freshman');
+		});
+
+		$("#enrollButtom").click(function() {
+			choose('Enrollment');
+		});
+
+		function choose(receiptor)
+		{
+			jQuery.ajax({'success':function(data){
+				// $("#ajaxDiv").hide() ;
+				// $("#ajaxDiv").html(data).fadeIn(700).animate({opacity: 1.0},700);
+				var div=$('<div id="ajaxRapped"></div>').html(data).hide();
+                                         $('#ajaxDiv').html(div);
+                                         div.fadeIn(700).animate({opacity: 1.0},700);
+				$.getScript(bUrl+"/app/js/freshmanread/ajaxADFR.js");
+			},
+				'type': 'GET',//預設跑GET
+				'url': UrlAjax ,
+				'data' : { 'son' : receiptor } ,
+				'cache':false});
+		}
+
+////////////////////////文件下載專區////////////////////////
+      $("#red").hover(function(){
+          $(this).stop().animate({top:'-10px'},"fast"),
+          $("#N").css("display","") ;
+        },function(){
+          $(this).stop().animate({top:'0px'},"fast"),
+          $("#N").css("display","none") });
+
+      $("#orange").hover(function(){
+          $(this).stop().animate({top:'-10px'},"fast"),
+          $("#C").css("display","") ;
+        },function(){
+          $(this).stop().animate({top:'0px'},"fast"),
+          $("#C").css("display","none") }) ;
+      
+      $("#yellow").hover(function(){
+          $(this).stop().animate({top:'-10px'},"fast"),
+          $("#U").css("display","") ;
+        },function(){
+          $(this).stop().animate({top:'0px'},"fast"),
+          $("#U").css("display","none") }) ;
+      
+      $("#green").hover(function(){
+          $(this).stop().animate({top:'-10px'},"fast"),
+          $("#HUA").css("display","") ;
+        },function(){
+          $(this).stop().animate({top:'0px'},"fast"),
+          $("#HUA").css("display","none") }) ;
+      
+      $("#blue").hover(function(){
+          $(this).stop().animate({top:'-10px'},"fast"),
+          $("#in").css("display","") ;
+        },function(){
+          $(this).stop().animate({top:'0px'},"fast"),
+          $("#in").css("display","none") }) ;
+      
+      $("#pink").hover(function(){
+          $(this).stop().animate({top:'-10px'},"fast"),
+          $("#ni").css("display","") ;
+        },function(){
+          $(this).stop().animate({top:'0px'},"fast"),
+          $("#ni").css("display","none") }) ;
+      
+      $("#bear").hover(function(){
+          $("#red,#orange,#yellow,#green,#blue,#pink").stop().animate({top:'-10px'},"fast"),
+          $(this).stop().animate({left:'-10px'},"fast"),
+          $("#N,#C,#U,#HUA,#in,#ni,#happy").css("display","") ;
+        },function(){
+          $("#red,#orange,#yellow,#green,#blue,#pink").stop().animate({top:'0px'},"fast"),
+          $(this).stop().animate({left:'10px'},"fast"),
+          $("#N,#C,#U,#HUA,#in,#ni,#happy").css("display","none") }) ;
+////////////////////////輔導及活動專區////////////////////////
+      $("#Woman1").hover(function(){
+        $("#Woman1").stop().animate({height:'170px'},1000), 
+        $("#girlRight").stop().fadeIn(1000)
+      },function(){
+        $("#Woman1").stop().animate({height:'150px'},1000),
+        $("#girlRight").css("display","none"),
+        $("#girlRight").stop().fadeOut(1000)
+      }) ;
+
+      $("#Woman2").hover(function(){
+        $("#Woman2").stop().animate({height:'170px'},1000),
+        $("#girlLeft").stop().fadeIn(1000)
+      },function(){
+        $("#Woman2").stop().animate({height:'150px'},1000),
+        $("#girlLeft").css("display","none"),
+        $("#girlLeft").stop().fadeOut(1000)
+      }) ;
+
+////////////////////////新生及復學須知////////////////////////
+      $("#people1").hover(function(){
+        $("#people1").css("transform","rotate(-20deg)") ;
+        $("#freshNotify").css("display","")
+      },function(){
+        $("#freshNotify").css("display","none");
+        $("#people1").css("transform","rotate(0deg)") ;
+      });
+
+////////////////////////生活相關須知////////////////////////
+      $("#Man2").hover(function(){
+        $("#Man2").stop().animate({left:'40px'});
+        $("#Man2").css("transform","rotate(-5deg)");
+        $("#Man2").css("transform","scale(0.8)");
+        $("#freshLife").css("display","")
+
+      },function(){
+        $("#Man2").stop().animate({left:'0px'});
+        $("#Man2").css("transform","rotate(0deg)");
+        $("#Man2").css("transform","scale(1)");
+        $("#freshLife").css("display","none")
+      });
+
+////////////////////////新生及復學須知按鈕////////////////////////
+	
+	  $("#freshButtom").hover(function(){
+	  	if( document.getElementById('freshButtom').style.opacity==0.3 ){
+	  		$("#freshButtom").css("opacity","0.6");}
+      },function(){
+      	if( document.getElementById('freshButtom').style.opacity==0.6 ){
+      		$("#freshButtom").css("opacity","0.3");}
+      });
+	
+	  $("#enrollButtom").hover(function(){
+	  	if( document.getElementById('enrollButtom').style.opacity==0.3 ){
+	  	$("#enrollButtom").css("opacity","0.6");}
+      },function(){
+      	if( document.getElementById('enrollButtom').style.opacity==0.6 ){
+      	$("#enrollButtom").css("opacity","0.3");}
+      });
+	
+
+////////////////////////////////////////////////////////////////////////
+    }
+})(jQuery);
+
+(function($)  
+{
+    $(document).ready(function()
+    {
+       $.ajaxADFR();
+    });
+})(jQuery);

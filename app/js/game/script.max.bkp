@@ -1,0 +1,1198 @@
+
+
+(function($)
+{
+    $.game = function(options)
+    {
+        var options = $.extend({
+			gameMainID:		'game_main',
+			mapID:			'game_map',
+			cardbarOpenID:	'game_cardbar_open',
+			cardbarID:		'game_cardbar',
+			moneyID:		'game_money',
+			energyID:		'game_energy',
+			stepCounterID:	'game_stepNumber',
+			friendBackID:	'game_friend_box',
+			friendBarID:	'game_friend_bar',
+			friendLeftID:	'game_friend_bar_left',
+			friendRightID:	'game_friend_bar_right',
+			achievementID:	'game_achievement',
+			mapDisX:		0,
+			mapDisY:		0,
+			diceNumber:		1,
+			heroLeft:		0,
+			heroTop:		0,
+			doubleBuff:		0,
+			moneyGod:		0,
+			cardbarOpen:	false,
+			useCarding:		false,
+			walking:		false,
+			sending:		false
+        }, options);
+		var game_back = $('<div id="game_window_back"></div>').hide().appendTo("#" + options.gameMainID);
+		var click_back = $('<div id="game_window_back"></div>').hide().appendTo("#" + options.gameMainID).click(function(evt){
+			//if($(evt.target).parents("#game_window_divShow").length == 0 && evt.target.id != "game_window_divShow") {
+				click_back.fadeOut();
+				sendData("get_user_profile",'',refreshUser);
+			//}
+		});
+		var friend_back = $("#" + options.friendBackID).appendTo("#" + options.gameMainID).click(function(evt){
+			if($(evt.target).parents("#game_window_divShow").length == 0 && evt.target.id != "game_window_divShow") {
+				if(!options.sending)
+				{
+					options.useCarding = false;
+					friend_back.fadeOut();
+					options.chooseFriend = -1;
+				}
+			}
+		});
+		var box = $('<div id="game_window_divShow"></div>').appendTo(game_back);
+		var eventBox = $('<div id="game_window_divShow"></div>').appendTo(click_back);
+		var display_card = function(open){
+			if(open)
+			{
+				$("#" + options.cardbarID).empty().animate({
+					left: '10%'
+				});
+				var card_number = new Array(shopCard.length);
+				for(var i = 1;i<shopCard.length;i++)
+				{
+					var counter = 0;
+					for(var j=0;j<userCard.length;j++)
+					{
+						if (userCard[j].type == i) counter++;
+					}
+					var carddiv = $('<div></div>').addClass('game_cardbox').appendTo("#" + options.cardbarID).mouseenter(function(){
+						$(".game_cardbox").css({
+							top: '0px'
+						});
+						if(!options.useCarding)
+						{
+							$(this).animate({
+								top: '-20px'
+							});
+						}
+					}).mouseleave(function(){
+						$(this).css({
+							top: '0px'
+						});
+					});
+					var card = $('<img src="'+ bUrl +'/file/img/game/card/'+ i + '.jpg" ></img>').addClass('game_card').appendTo(carddiv);
+					card_number[i-1] = $('<div>' + counter + '</div>').addClass('game_cardnumber').appendTo(carddiv);				
+				}
+				$(card_number).each(function(index)
+				{
+					$(this).click(function(){
+						if(!options.useCarding)
+						{
+							for(var j=0;j<userCard.length;j++)
+							{
+								if (userCard[j].type == index + 1)
+								{
+									usingCard(userCard[j].pid,userCard[j].type,0);
+									return true;
+								};
+							}
+						}
+					});
+				});
+			}
+			else
+			{
+				$("#" + options.cardbarID).animate({
+					left: '-85%'
+				}, 400, 'swing',function() {
+					$(this).empty();
+				});		
+			}
+		};
+		var walk = function()
+		{
+			options.mapDisX = 0-mapData[userProfile.position - 1].location_x + options.heroLeft;
+			options.mapDisY = 0-mapData[userProfile.position - 1].location_y + options.heroTop;
+			$("#" + options.mapID).css({
+				left: options.mapDisX + 'px',
+				top:  options.mapDisY + 'px'
+			});
+			var t_array = Array();
+			for(var i = 0;i < mapData.length ;i++)
+			{
+				if(mapData[i].special_type == 4)
+				{
+					t_array.push(i + 1);
+				}
+			}
+			var moveOne = function(i,fly)
+			{
+				var d_array = Array();
+				if( i == 0 )
+				{
+					if(mapData[userProfile.position - 1].special_type == 4 && fly)
+					{
+						var now_top = hero.css('top');
+						hero.animate({
+							top: '-500px'
+						}).animate({
+							top: now_top
+						});
+						if(mapData[userProfile.position - 1].n_0 != 0)
+						{
+							d_array.push(0);
+						}
+						if(mapData[userProfile.position - 1].n_1 != 0)
+						{
+							d_array.push(1);
+						}
+						if(mapData[userProfile.position - 1].n_2 != 0)
+						{
+							d_array.push(2);
+						}
+						if(mapData[userProfile.position - 1].n_3 != 0)
+						{
+							d_array.push(3);
+						}
+						userProfile.direction = d_array[Math.floor(Math.random()*d_array.length)];
+						options.mapDisX = 0-mapData[userProfile.position - 1].location_x + options.heroLeft;
+						options.mapDisY = 0-mapData[userProfile.position - 1].location_y + options.heroTop;
+						var move_x = options.mapDisX - parseInt($("#" + options.mapID).css('left').replace("px",""));
+						var move_y = options.mapDisY - parseInt($("#" + options.mapID).css('top').replace("px",""));
+						$(".game_friend").delay(200).animate({
+							left: '+=' + move_x + 'px',
+							top: '+=' + move_y + 'px'
+						});
+						$(".game_friend_text").delay(200).animate({
+							left: '+=' + move_x + 'px',
+							top: '+=' + move_y + 'px'
+						});
+						$(".game_stop").delay(200).animate({
+							left: '+=' + move_x + 'px',
+							top: '+=' + move_y + 'px'
+						});
+						$("#" + options.mapID).delay(200).animate({
+							left: '+=' + move_x + 'px',
+							top: '+=' + move_y + 'px'
+						}, 400, 'swing',function() {
+							sendData("change_location", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+							$("#" + options.stepCounterID).text(i).hide();
+							return true;
+						});	
+					}
+					else if(mapData[userProfile.position - 1].special_type == 3)
+					{
+						display_question(userProfile.position);
+						
+					}
+					else if(mapData[userProfile.position - 1].special_type < 3 && mapData[userProfile.position - 1].special_type > 0)
+					{
+						getSpecial(mapData[userProfile.position - 1].special_type);
+					}
+					else if(mapData[userProfile.position - 1].special_type > 4)
+					{
+						getSpecial(mapData[userProfile.position - 1].special_type);
+					}
+					else
+					{
+						display_question(userProfile.position);
+					}
+					$("#" + options.stepCounterID).text(i).hide();
+					return true;
+				}
+				else
+				{
+					$("#" + options.stepCounterID).text(i);
+					i--;
+				}
+				if(fly)
+				{
+					var now_top = hero.css('top');
+					hero.animate({
+						top: '-500px'
+					}).animate({
+						top: now_top
+					});
+					if(mapData[userProfile.position - 1].n_0 != 0)
+					{
+						d_array.push(0);
+					}
+					if(mapData[userProfile.position - 1].n_1 != 0)
+					{
+						d_array.push(1);
+					}
+					if(mapData[userProfile.position - 1].n_2 != 0)
+					{
+						d_array.push(2);
+					}
+					if(mapData[userProfile.position - 1].n_3 != 0)
+					{
+						d_array.push(3);
+					}
+					userProfile.direction = d_array[Math.floor(Math.random()*d_array.length)];
+				}
+				else
+				{
+					if(mapData[userProfile.position - 1].n_0 != 0 && userProfile.direction != 2)
+					{
+						d_array.push(0);
+					}
+					if(mapData[userProfile.position - 1].n_1 != 0 && userProfile.direction != 3)
+					{
+						d_array.push(1);
+					}
+					if(mapData[userProfile.position - 1].n_2 != 0 && userProfile.direction != 0)
+					{
+						d_array.push(2);
+					}
+					if(mapData[userProfile.position - 1].n_3 != 0 && userProfile.direction != 1)
+					{
+						d_array.push(3);
+					}
+					userProfile.direction = d_array[Math.floor(Math.random()*d_array.length)];
+					userProfile.position = mapData[userProfile.position - 1]['n_'+userProfile.direction];
+				}
+				options.mapDisX = 0-mapData[userProfile.position - 1].location_x + options.heroLeft;
+				options.mapDisY = 0-mapData[userProfile.position - 1].location_y + options.heroTop;
+				var move_x = options.mapDisX - parseInt($("#" + options.mapID).css('left').replace("px",""));
+				var move_y = options.mapDisY - parseInt($("#" + options.mapID).css('top').replace("px",""));
+				$(".game_friend").delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				});
+				$(".game_friend_text").delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				});
+				$(".game_stop").delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				});
+				$("#" + options.mapID).delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				}, 400, 'swing',function() {
+
+					for(var k =0;k < mapUsingCard.length ; k++)
+					{
+						if(userProfile.position == mapUsingCard[k].mid)
+						{
+							for(var j =mapUsingCard.length;j >0  ; j--)
+							{
+								if($(".game_stop").eq(j).attr("mid") == mapUsingCard[k].mid)
+								{
+									$(".game_stop").eq(j).remove();
+								}
+							}
+							display_question(userProfile.position);
+							sendData("hit_stop", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+							$("#" + options.stepCounterID).text(k).hide();
+							return true;
+						}
+					}
+					if(mapData[userProfile.position - 1].special_type == 4 && fly != true)
+					{
+						userProfile.position = t_array[Math.floor(Math.random()*t_array.length)];
+						moveOne(i,true);
+					}
+					else
+					{
+						moveOne(i,false);
+					}
+				});
+			};
+			$("#game_dice_box").click(function()
+			{
+				display_point(false);
+				if( !options.walking)
+				{
+					if(userProfile.energy > 0)
+					{
+						options.cardbarOpen=false;
+						display_card(options.cardbarOpen);
+						var step = 0;
+						for(var i = 0;i <options.diceNumber;i++)
+						{
+							step = step + Math.floor(Math.random()*6 + 1);
+						}
+						options.walking = true;
+						$("#game_dice_box").hide();
+						
+						moveOne(step);
+						$("#" + options.stepCounterID).text(step).show();
+						userProfile.energy--;
+						display_energy();
+						$("#game_dice_box").empty();
+						$('<img class="game_dice" src="'+ bUrl +'/file/img/game/dice.gif" />').appendTo("#game_dice_box");
+						if(options.moneyGod == 1)
+						{
+							sendData("add_pu_pu",'ss='+options.ss +'&pupu='+step,refreshUser);
+							display_message("財神附身獲贈"+step+"積木");
+							options.moneyGod = 0;
+						}
+						if(userProfile.badgod == "1")
+						{
+							sendData("bad_god",'money='+(0-step));
+							display_message("被衰神附身導致遺失了"+step+"積木");
+							$('#' + options.moneyID).text(parseInt(userProfile.money)-parseInt(step));
+							userProfile.badgod = 0;
+						}
+						if(options.diceNumber == 2)
+						{
+							options.diceNumber = 1;
+						}
+					}
+					else
+					{
+						display_message("你沒有能量囉!");
+					}
+				}
+			});
+		};
+		var display_friend = function(){
+			$(".game_friend").fadeOut().remove();
+			$(".game_friend_text").fadeOut().remove();
+			for(var i = 0;i < friendData.length;i++)
+			{
+				$('<img src="'+ bUrl +'/file/img/personal/' + friendData[i].skin_id +'.gif"></img>').addClass('game_friend').css({
+					left: mapData[friendData[i].position - 1].location_x - mapData[userProfile.position - 1].location_x + options.heroLeft - 25 + 'px',
+					top: mapData[friendData[i].position - 1].location_y - mapData[userProfile.position - 1].location_y + options.heroTop - 50+ 'px'
+				}).appendTo("#" + options.gameMainID);
+				$('<div></div>').addClass('game_friend_text').text(friendData[i].nickname).css({
+					left: mapData[friendData[i].position - 1].location_x - mapData[userProfile.position - 1].location_x + options.heroLeft - 40 + 'px',
+					top: mapData[friendData[i].position - 1].location_y - mapData[userProfile.position - 1].location_y + options.heroTop - 70+ 'px'
+				}).appendTo("#" + options.gameMainID);
+			}
+		}
+		var display_question = function(mid){ 
+			sendData("get_question", 'mid='+mid, GetQuestion);
+		}
+		var jump_questionwindow = function(input){
+			box.empty();
+			game_back.fadeIn();
+			input.appendTo(box);
+		}
+		var jump_window = function(input){
+			eventBox.empty();
+			click_back.fadeIn();
+			input.appendTo(eventBox);
+		}
+		
+		var jump_friend_window = function(pid,type)
+		{
+			$("#" + options.friendBarID).empty().css({
+				position: 'absolute',
+				width: 180*friendData.length +'px',
+				height: '204px',
+				top: '0px',
+				left: '0px'
+			});
+			for(var i =0;i<friendData.length + 5;i++)
+			{
+				var friend_show =friend_back.children("#game_window_divShow");
+				if( i >= friendData.length)
+				{
+					break;
+				}
+				var gifts = $('<div></div>').css({
+					width: '100%',
+					height: '100%',
+					zIndex: '50',
+					position: 'absolute',
+					top: '0px',
+					left: '0px'
+				});
+				var personBox = $('<div number="'+ i +'"></div>').css({
+					width: '149px',
+					height: '204px',
+					overflow: 'hidden',
+					position: 'relative',
+					float: 'left',
+					margin: '0px 15px'
+				}).click(function(){
+					if(type==9 || type ==10)
+					{
+						sendData("using_card", 'pid='+pid + '&mid='+friendData[$(this).attr('number')].uid, CardCheck[type]);
+						friend_back.fadeOut();
+						gifts.remove();
+						friend_show.children().show();
+					}
+				}).appendTo("#" + options.friendBarID);
+				$('<img src="'+bUrl+'/file/img/profile/person_box.png"/>').css({
+					width: '149px',
+					height: '204px'
+				}).appendTo(personBox);
+				
+				if(type == 0 && pid ==0 )
+				{	
+					if(friendData[i].last_send.substr(8,2) != serverTime.substr(8,2))
+					{
+						var look_button = $('<img src="'+bUrl+'/file/img/game/give_gift.png" id="'+ i +'"/>').css({
+							top: '150px',
+							left: '36px',
+							width: '70px',
+							height: '70px',
+							position: 'absolute'
+						}).click(function(){
+							options.sending = true;
+							var this_id = $(this).attr("id");
+							var send_uid = friendData[this_id].uid;
+							friend_show.children().hide();
+							gifts.appendTo(friend_show);
+							$('<img src="'+bUrl+'/file/img/game/giveGift_back.png"/>').css({
+								width: '100%',
+								height: '100%',
+								position: 'absolute',
+								top: '0px',
+								left: '0px'
+							}).appendTo(gifts);
+							var gifts_box = $('<div></div>').css({
+								width: '561px',
+								height: '297px',
+								zIndex: '50',
+								position: 'absolute',
+								margin: '0 auto',
+								top: '54px',
+								left: '15px',
+								overflow: 'hidden'
+							}).appendTo(gifts);
+							for(var j = 1;j<shopCard.length +1 ;j++)
+							{
+								var carddiv = $('<div></div>').css({
+									width: '14.6%',
+									height: '50%',
+									float: 'left',
+									margin: '0 1%',
+									position: 'relative'
+								}).appendTo(gifts_box);
+								$('<img src="'+bUrl+'/file/img/game/giveGift_frame.png"/>').css({
+									width: '100%',
+									height: '100%',
+									position: 'relative'
+								}).appendTo(carddiv);
+								var card = $('<img src="'+ bUrl +'/file/img/game/card/'+ j + '.jpg" number="'+j+'"></img>').css({
+									width: '65px',
+									height: '129px',
+									position: 'absolute',
+									top: '10px',
+									left: '9px'
+								}).click(function(){
+									options.sending = false;
+									sendGiftTo(send_uid,$(this).attr("number"));
+									friendData[this_id].last_send = serverTime;
+									friend_back.fadeOut();
+									gifts.remove();
+									friend_show.children().show();
+								}).appendTo(carddiv);
+							}
+							
+						}).appendTo(personBox);
+					}
+				}
+				$('<img src="'+bUrl+'/file/img/personal/' + friendData[i].skin_id + '.gif"/>').css({
+					position: 'absolute',
+					left: '28px',
+					top: '21px',
+					height: '139px'
+				}).appendTo(personBox);
+				$('<p>'+friendData[i].nickname + '</p>').css({
+					position: 'absolute',
+					left: '0px',
+					top: '153px',
+					width: '149px',
+					textAlign: 'center'
+				}).appendTo(personBox);
+			}
+			friend_back.fadeIn();
+			$("#" + options.friendLeftID).click(function(){
+				if(parseInt($("#" + options.friendBarID).css("left").replace("px",""))+180 <= 0)
+				$("#" + options.friendBarID).stop().animate({
+					left: '+=180px'
+				});
+			});
+			$("#" + options.friendRightID).click(function(){
+				if( 0-parseInt($("#" + options.friendBarID).css("left").replace("px","")) + parseInt($("#game_friend_out").css("width").replace("px",""))+180 <= parseInt($("#" + options.friendBarID).css("width").replace("px","")) )
+				$("#" + options.friendBarID).stop().animate({
+					left: '-=180px'
+				});
+			});
+		}
+		var display_energy = function(){
+			var i = userProfile.energy;
+			if( i >= 4)
+			{
+				i = 4;
+			}
+			$("#" + options.energyID).attr("src",bUrl + "/file/img/game/battery"+i+".gif");
+		}
+		var display_point = function(open){
+			if(open)
+			{
+				for(var i = 0;i < mapData.length;i++)
+				{
+					var p = $('<div class="point" mapID="'+ (i+1) +'"></div>').css({
+						left: parseInt(options.mapDisX) + parseInt(mapData[i].location_x) - 53 + 'px',
+						top: parseInt(options.mapDisY) + parseInt(mapData[i].location_y) - 53 + 'px',
+						position: 'absolute'
+					}).appendTo("#" + options.gameMainID);
+					$('<img src="'+ bUrl +'/file/img/game/point.png" ></img>').appendTo(p);
+				}
+			}
+			else
+			{
+				$(".point").remove();
+			}
+		}
+		var display_gift = function(){
+			$("#game_get_gift").click(function(evt){
+				if($(evt.target).parents("#game_gift_box").length == 0 && evt.target.id != "game_gift_box") {
+					$("#game_get_gift").fadeOut();
+					
+				}
+			});
+			$("#game_gift_items").css({
+				width: giftQuery.length*120 + 'px'
+			});
+			var item = Array(giftQuery.length);
+			var counter = giftQuery.length;
+			for(var i = 0; i< giftQuery.length; i++)
+			{
+				item[i] = $('<div class="game_gift_item"></div>').appendTo($("#game_gift_items"));
+				$('<div>'+ giftQuery[i].nickname + '</div>').css({
+					textAlign: 'center'
+				}).appendTo(item[i]);
+				var card = $('<img src="'+ bUrl +'/file/img/game/card/'+ giftQuery[i].cid + '.jpg" ></img>').addClass('game_gift_card').appendTo(item[i]);
+				$('<img src="'+ bUrl +'/file/img/game/getGift_getButton.gif" card="' + giftQuery[i].pid + '"></img>').addClass('game_gift_button').click(function(){
+					$(this).unbind();
+					sendData("return_receive_gift",'pid=' + $(this).attr("card"),function(data){
+						var obj = jQuery.parseJSON(data);
+						userCard = obj['userCard'];
+						userProfile = obj['userProfile'];
+					});
+					$(this).parents(".game_gift_item").fadeOut();
+				}).appendTo(item[i]);
+			}
+		};
+		function display_message(text)
+		{
+			$("#game_message_box").children().text(text);
+			$("#game_message_box").show("fast",function(){
+				setTimeout(function(){
+					$("#game_message_box").fadeOut();
+				}, 2000);
+			})
+		}
+		//上面都上function
+		$('#' + options.moneyID).text(userProfile.money);
+		var hero = $('<img src="'+ bUrl +'/file/img/personal/'+ userProfile.skin_id +'.gif"/>').addClass('game_person').appendTo("#" + options.gameMainID);
+		options.heroLeft = parseInt(hero.css('left').replace("px",""));
+		options.heroTop = parseInt(hero.css('top').replace("px",""));
+		hero.css({
+			left: options.heroLeft  - parseInt(hero.css('width').replace("px",""))/2,
+			top: options.heroTop  - parseInt(hero.css('height').replace("px",""))/2
+		});
+		display_energy();
+		$("#" + options.cardbarOpenID).click(function(){
+			if(!options.useCarding && !options.walking)
+			{
+				options.cardbarOpen = !options.cardbarOpen;
+				display_card(options.cardbarOpen);
+			}
+		});
+		$("#" + options.cardbarOpenID).mouseover(function(){
+			$(this).attr('src' , bUrl+'/file/img/game/cards_light.png')
+		});
+		$("#" + options.cardbarOpenID).mouseout(function(){
+			$(this).attr('src' , bUrl+'/file/img/game/cards.png')
+		});
+		$("#game_give_gift").click(function(){
+			if(!options.useCarding && !options.walking)
+			{
+				jump_friend_window(0,0);
+			}
+		});
+		var settin_open = false;
+		$("#game_setting").click(function(){
+			settin_open = !settin_open;
+			if(settin_open)
+			{
+				$("#game_setting_bar").animate({
+					left: '-=' + $("#game_setting_bar").css("width")
+				})
+			}
+			else
+			{
+				$("#game_setting_bar").animate({
+					left: '100%'
+				})
+			}
+		});
+		
+		$("#" + options.achievementID).click(function(){
+			//成就顯示
+			if(!options.useCarding && !options.walking)
+			{
+				var ach_back = $('<div id="game_window_back"></div>').hide().appendTo("#" + options.gameMainID).fadeIn().click(function(evt){
+					ach_back.fadeOut();
+				});
+				$("#game_ach_box").show().appendTo(ach_back);
+				var ach = $(".game_ach_detail");
+
+				var index=0;
+
+				var chance = achievement.chance;
+				var destiny = achievement.destiny;
+				var question = achievement.question;
+				var money = achievement.money;
+
+				for (var key in chance){
+					if(parseInt(userProfile['data_chance']) >= parseInt(key)){
+						ach.eq(index++).css({
+							color: 'green'
+						});
+					}else{
+						ach.eq(index++).css({
+							color: 'red'
+						});
+					}
+				}
+				for (var key in destiny){
+					if(parseInt(userProfile['data_destiny']) >= parseInt(key)){
+						ach.eq(index++).css({
+							color: 'green'
+						});
+					}else{
+						ach.eq(index++).css({
+							color: 'red'
+						});
+					}
+				}
+				for (var key in question){
+					if(parseInt(userProfile['data_question']) >= parseInt(key)){
+						ach.eq(index++).css({
+							color: 'green'
+						});
+					}else{
+						ach.eq(index++).css({
+							color: 'red'
+						});
+					}
+				}
+				for (var key in money){
+					if(parseInt(userProfile['data_money']) >= parseInt(key)){
+						ach.eq(index++).css({
+							color: 'green'
+						});
+					}else{
+						ach.eq(index++).css({
+							color: 'red'
+						});
+					}
+				}
+				$.bar($("#game_ach_cnt"));
+			}
+		});
+		$("#game_rule").click(function(){
+			var rule_window = $('<div id="game_rule_window"></div>');
+			$('<img src="'+ bUrl +'/file/img/game/instruction.png" />').css({
+				height: '400px',
+				width: '600px',
+				position: 'absolute',
+				left: '0px'
+			}).appendTo(rule_window);
+			var word = $('<p></p>').appendTo(rule_window);
+            word.append('<div style="font-size=20px">遊戲規則：</div><ol><li>行走方法：以骰子的點數作為前進步數。</li><li>初始金額：每位玩家有150個積木。</li><li>機會、命運：當玩家到達機會或命運格時，將會隨機獲得或扣除積木，或是遇到問答、突發狀況。</li><li>登入獎勵：第一次登入會贈送100格能量！除此之外每日登入可獲得積木5個，也會依照遊戲時間給予一定積木。</li><li>遊戲限制：大富翁有體力限制，每次骰骰子會消耗一格能量，能量總共有四格，若能量消耗殆盡，得透過好友送你能量卡，這樣才能繼續遊戲喔！</li><li>特殊道具：遊戲中有12種道具，可以透過成就達成得到，也可以從好友的送禮中取得！</li></ol>');
+			word.css({
+				paddingTop: '72px',
+				paddingLeft: '44px',
+				paddingRight: '40px',
+				textAlign: 'left',
+				position: 'absolute'
+			});
+			jump_window(rule_window);
+		});
+		walk();
+		display_friend();
+		display_gift();
+        sendData("get_check_code", '', GetSecret);
+		display_stop();
+		function display_stop()
+		{
+			for(var i =0;i < mapUsingCard.length ; i++)
+			{
+				$('<img src="'+ bUrl +'/file/img/game/stop.png" class="game_stop" mid="'+mapUsingCard[i].mid +'"/>').css({
+					left: mapData[mapUsingCard[i].mid - 1].location_x - mapData[userProfile.position - 1].location_x + options.heroLeft - 39 + 'px',
+					top: mapData[mapUsingCard[i].mid - 1].location_y - mapData[userProfile.position - 1].location_y + options.heroTop - 98 + 'px'
+				}).appendTo("#" + options.gameMainID);
+			}
+		
+		}
+		function usingCard(pid,type,mid){
+			options.useCarding = true;
+			//$.get('index.php?r=game/ajaxUsingCard', 'pid='+pid, CardCheck);
+			switch(type)
+			{
+				case "1":
+					options.useCarding = false;
+					break;
+				case "2":
+					if(options.doubleBuff != 1)
+					{
+						options.doubleBuff = 1;
+						sendData("using_card", 'pid='+pid + '&mid='+mid, CardCheck[type]);
+					}
+					options.useCarding = false;
+					break;
+				case "3":
+					if(options.diceNumber != 2)
+					{
+						options.diceNumber = 2;
+						$('<img class="game_dice" src="'+ bUrl +'/file/img/game/dice.gif" />').appendTo("#game_dice_box");
+						sendData("using_card", 'pid='+pid + '&mid='+mid, CardCheck[type]);
+					}
+					options.useCarding = false;
+					break;
+				case "4":
+					sendData("using_card", 'pid='+pid + '&mid='+mid, CardCheck[type]);
+					
+					break;
+				case "5":
+					display_point(true);
+					options.walking = true;
+					$("#game_dice_box").hide();
+					$(".point").click(function(){
+						sendData("using_card", 'pid='+pid + '&mid='+$(this).attr('mapID'), CardCheck[type]);
+						options.walking = false;
+						$("#game_dice_box").show();
+						display_point(false);						
+					});
+					display_message("你在好友的路上放置了路障!");
+					break;
+				case "6":
+					display_point(true);
+					options.walking = true;
+					$("#game_dice_box").hide();
+					$(".point").click(function(){
+						sendData("using_card", 'pid='+pid + '&mid='+$(this).attr('mapID'), CardCheck[type]);
+						options.walking = false;
+						$("#game_dice_box").show();
+						display_point(false);
+						for(var k =0;k < mapUsingCard.length ; k++)
+						{
+							if($(this).attr('mapID') == mapUsingCard[k].mid)
+							{
+								for(var j =mapUsingCard.length;j >0  ; j--)
+								{
+									if($(".game_stop").eq(j).attr("mid") == mapUsingCard[k].mid)
+									{
+										$(".game_stop").eq(j).remove();
+									}
+								}
+								return true;
+							}
+						}
+					})
+					break;
+				case "7":
+					var tempLoc = userProfile.position;
+					while(true)
+					{
+						userProfile.position = Math.floor(Math.random()*mapData.length + 1);
+						if(userProfile.position != tempLoc)
+						{
+							break;
+						}
+					}
+					var now_top = hero.css('top');
+					hero.animate({
+						top: '-500px'
+					}).animate({
+						top: now_top
+					});
+					var d_array = Array();
+					if(mapData[userProfile.position - 1].n_0 != 0)
+					{
+						d_array.push(0);
+					}
+					if(mapData[userProfile.position - 1].n_1 != 0)
+					{
+						d_array.push(1);
+					}
+					if(mapData[userProfile.position - 1].n_2 != 0)
+					{
+						d_array.push(2);
+					}
+					if(mapData[userProfile.position - 1].n_3 != 0)
+					{
+						d_array.push(3);
+					}
+					userProfile.direction = d_array[Math.floor(Math.random()*d_array.length)];
+					
+					options.mapDisX = 0-mapData[userProfile.position - 1].location_x + options.heroLeft;
+					options.mapDisY = 0-mapData[userProfile.position - 1].location_y + options.heroTop;
+					var move_x = options.mapDisX - parseInt($("#" + options.mapID).css('left').replace("px",""));
+					var move_y = options.mapDisY - parseInt($("#" + options.mapID).css('top').replace("px",""));
+					$(".game_friend").delay(200).animate({
+						left: '+=' + move_x + 'px',
+						top: '+=' + move_y + 'px'
+					});
+					$(".game_friend_text").delay(200).animate({
+						left: '+=' + move_x + 'px',
+						top: '+=' + move_y + 'px'
+					});
+					$(".game_stop").delay(200).animate({
+						left: '+=' + move_x + 'px',
+						top: '+=' + move_y + 'px'
+					});
+					$("#" + options.mapID).delay(200).animate({
+						left: '+=' + move_x + 'px',
+						top: '+=' + move_y + 'px'
+					},'normal','swing',function() {
+						sendData("using_card", 'pid='+pid + '&mid='+userProfile.position, CardCheck[type]);
+						sendData("change_location", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+					});		
+					break;
+				case "8":
+					if(options.moneyGod != 1)
+					{
+						options.moneyGod = 1;
+						sendData("using_card", 'pid='+pid + '&mid='+0, CardCheck[type]);
+					}
+					options.useCarding = false;
+					break;
+				case "9":
+					jump_friend_window(pid,type);
+					
+					break;
+				case "10":
+					jump_friend_window(pid,type);
+					
+					break;
+				default :
+					sendData("using_card", 'pid='+pid + '&mid='+mid, CardCheck[type]);
+					
+					break;
+			}
+		}
+		function getSpecial(type){
+			options.walking = true;
+			$("#game_dice_box").hide();
+			var display_animate = $('<div></div>').css({
+				width: '100%',
+				height: '100%',
+				zIndex: '20',
+				position: 'absolution'
+			}).appendTo("#" + options.gameMainID);
+			if(type == 1)
+			{
+				var destiny = $('<img src="'+ bUrl +'/file/img/game/destiny/destiny1.png"/>').css({
+					left: '50%',
+					position: 'absolute',
+					top: '22%',
+					width: '234px',
+					zIndex: '20',
+					height: '198px'
+				}).appendTo(display_animate);
+				var index = 1;
+				var time = 0;
+				destiny_animate();
+			}
+			else if (type == 2)
+			{
+				var destiny_card = $('<img src="'+ bUrl +'/file/img/game/destiny/destiny_card.png"/>').css({
+					left: '363px',
+					position: 'absolute',
+					top: '100%',
+					width: '210px',
+					zIndex: '20',
+					height: '281px'
+				}).appendTo(display_animate).animate({
+					top: '10%'
+				},600,'swing',function(){
+					destiny_card.animate({
+						opacity: '0.8'
+					}).attr("src",bUrl +"/file/img/game/destiny/destiny_card2.png").animate({
+						opacity: '1.0'
+					},'normal','swing',function(){
+						destiny_card.fadeOut(300,function(){
+							sendData("get_special",'type='+type,displayDestiny);
+							destiny_card.remove();
+							display_animate.remove();
+							sendData("change_location", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+						});
+					});
+					
+				});
+				
+			}
+			else
+			{
+				options.walking = false;
+				$("#game_dice_box").show();
+				sendData("get_special",'type='+type,displaySpecial);
+			}
+			
+			
+			function destiny_animate(){
+				destiny.attr("src",bUrl +"/file/img/game/destiny/destiny"+ index +".png");
+				time++;
+				if(index <10)
+				{
+					index++;
+				}
+				else
+				{
+					index = 1;
+				}
+				if(time < 90)
+				{
+					setTimeout(destiny_animate, 30);
+				}
+				else
+				{
+					var destiny_ball = $('<img src="'+ bUrl +'/file/img/game/destiny/destiny_ball.png"/>').css({
+						left: '60%',
+						position: 'absolute',
+						top: '53%',
+						width: '8px',
+						height: '8px'
+					}).appendTo(display_animate);
+					setTimeout(function(){
+						destiny.fadeOut(300);
+						destiny_ball.fadeOut(300,function(){
+							sendData("change_location", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+							sendData("get_special",'type='+type,displayDestiny);
+							destiny.remove();
+							destiny_ball.remove();
+							display_animate.remove();
+						});
+					}, 100);
+				}
+				
+			}
+		}
+		var displayDestiny = function(data)
+		{
+			var obj = jQuery.parseJSON(data);
+			if(obj.values >0)
+			{
+				display_message("你獲得了"+ obj.values+"積木");
+				$('#' + options.moneyID).text(parseInt(userProfile.money) + parseInt(obj.values));
+			}
+			else
+			{
+				display_message("你損失了"+ Math.abs(obj.values) +"積木");
+				$('#' + options.moneyID).text(parseInt(userProfile.money) + parseInt(obj.values));
+			}
+		}
+		var displaySpecial = function(data){
+			var obj = jQuery.parseJSON(data);
+			var box = $('<div></div>').css({
+				width: '100%',
+				height: '100%',
+				position: 'relative'
+			});
+			var s_img = $('<img src="'+ bUrl +'/file/img/game/situation.gif" />').css({
+				position: 'absolute',
+				width: '100%',
+				height: '100%',
+				left: '0px'
+			}).appendTo(box);
+			var t = $('<div id="game_everyday_text"></div>').css({
+				position: 'absolute',
+				top: '28%',
+				width: '542px',
+				left: '25px'
+			}).text(obj.message).appendTo(box);
+			if(obj.action_type == 1 && obj.values >0 && options.doubleBuff == 1)
+			{
+				$('<img src="'+ bUrl +'/file/img/game/double.png" id="game_double_buff"/>').appendTo(t);
+				sendData("get_user_profile",'',refreshUser);
+				options.doubleBuff == 0;
+				sendData("change_location", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+			}
+			else if(obj.action_type == 2)
+			{
+				var now_top = hero.css('top');
+				userProfile.position = obj.values;
+				hero.animate({
+					top: '-500px'
+				}).animate({
+					top: now_top
+				});
+				options.mapDisX = 0-mapData[userProfile.position - 1].location_x + options.heroLeft;
+				options.mapDisY = 0-mapData[userProfile.position - 1].location_y + options.heroTop;
+				var move_x = options.mapDisX - parseInt($("#" + options.mapID).css('left').replace("px",""));
+				var move_y = options.mapDisY - parseInt($("#" + options.mapID).css('top').replace("px",""));
+				$(".game_friend").delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				});
+				$(".game_friend_text").delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				});
+				$(".game_stop").delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				});
+				$("#" + options.mapID).delay(200).animate({
+					left: '+=' + move_x + 'px',
+					top: '+=' + move_y + 'px'
+				}, 400, 'swing',function() {
+				});
+			}
+			else
+			{
+				sendData("change_location", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+			}
+			jump_window(box);
+		};
+		var CardCheck = [function(data){
+			var obj = jQuery.parseJSON(data);
+			userCard = obj['userCard'];
+			userProfile = obj['userProfile'];
+			display_card(true);
+			options.useCarding = false;
+		},function(data){
+			/*pid = 1*/
+			CardCheck[0](data);
+		},function(data){ 
+			/*pid = 2*/
+			CardCheck[0](data);
+		},function(data){
+			/*pid = 3*/
+			CardCheck[0](data);
+		},function(data){
+			/*pid = 4*/
+			var nowMoney = userProfile.money;
+			var obj = jQuery.parseJSON(data);
+			userCard = obj['userCard'];
+			userProfile = obj['userProfile'];
+			display_card(true);
+			nowMoney = userProfile.money - nowMoney;
+			display_message("你獲得了 "+nowMoney +"積木");
+			$('#' + options.moneyID).text(userProfile.money);
+			options.useCarding = false;
+		},function(data){
+			/*pid = 5*/
+			CardCheck[0](data);
+		},function(data){
+			/*pid = 6*/
+			CardCheck[0](data);
+		},function(data){
+			/*pid = 7*/
+			CardCheck[0](data);
+		},function(data){
+			/*pid = 8*/
+			var obj = jQuery.parseJSON(data);
+			userCard = obj['userCard'];
+			userProfile = obj['userProfile'];
+			options.ss = obj['ss'];
+			display_card(true);
+			options.moneyGod = 0;
+			options.useCarding = false;
+		},function(data){
+			/*pid = 9*/
+			CardCheck[0](data);
+		},function(data){
+			/*pid = 10*/
+			CardCheck[0](data);
+		},function(data){
+			/*pid = 11*/
+			CardCheck[0](data);
+		}];
+		
+		function FriendLocation(data){
+			var obj = jQuery.parseJSON(data);
+			friendData = obj['friendData'];
+			userProfile = obj['userProfile'];
+			display_friend();
+			options.walking = false;
+			$("#game_dice_box").show();
+		}
+
+        function GetSecret(data){
+            var obj = jQuery.parseJSON(data);
+            s = obj[0];
+        }
+
+		
+		function GetQuestion(data){
+			var question = jQuery.parseJSON(data);
+			var strings = question.message.split("|");
+			var box = $('<div></div>').css({
+				position: 'relative',
+				width: '100%',
+				height: '100%'
+			});
+			var b_img = $('<img src="'+ bUrl +'/file/img/game/question.gif" style="width: 100%; height: 100%; position: absolute left: 0px"/>').appendTo(box);
+			$('<div id="game_question_q"></div>').text(strings[0]).appendTo(box);
+			if(strings[1] == "c")
+			{
+				for(var i = 0;i< parseInt(strings[2]);i++)
+				{
+					$('<div number="'+ (i + 1) +'"></div>').addClass('game_question_a').css({
+						top: 140+ i * 50 + 'px'
+					}).text(strings[4 + i]).appendTo(box).click(function(){
+						if( $(this).attr('number') == strings[3])
+						{
+							game_back.fadeOut();
+							display_message("你答對了!!獲得"+question.values+"積木");
+							if(question.action_type == 1 && question.values > 0 && options.doubleBuff == 1)
+							{
+								display_message("你答對了!並且獲得"+question.values+"*2的獎勵");
+								//sendData("get_user_profile",'',refreshUser);
+								options.doubleBuff = 0;
+							}
+							if(question.action_type == 1)
+							{
+								sendData("add_pu_pu",'ss='+question.ss +'&pupu='+question.values,refreshUser);
+							}
+						}
+						else
+						{
+							game_back.fadeOut();
+							display_message("答案是: "+ strings[ 3 + parseInt(strings[3]) ]);
+						}
+					});
+				}
+			}
+			jump_questionwindow(box);
+			sendData("change_location", 'location='+userProfile.position+'&direction='+userProfile.direction, FriendLocation);
+		}
+		function refreshUser(data){
+			var obj = jQuery.parseJSON(data);
+			userProfile = obj;
+			$('#' + options.moneyID).text(userProfile.money);
+		}
+		function sendGiftTo(uid_to, cid){
+			sendData('get_gift_to', 'uid_to='+uid_to+'&cid='+cid,function(data){
+				friendData = jQuery.parseJSON(data);
+			});
+		}
+        function sendData(action, data, callBack){
+            data = data + '&s=' + s;
+            $.post(ajaxAction[action]+'.html', data, callBack);
+        }
+   };
+})(jQuery);
+
+(function($)
+{
+	$(document).ready(function()
+    {
+		if(daily == "TRUE")
+		{
+			$('<div id="game_everyday_text">恭喜獲得每日登入獎勵!</div>').css({
+				top: '12px',
+				position: 'absolute',
+				left: '211px'
+			}).appendTo($("#game_loading"));
+		}
+	});
+    $(window).load(function()
+    {
+		$("#game_loading").delay(3000).fadeOut(1000,function(){
+			$(this).remove();
+		});
+		$.game();
+    });
+})(jQuery);

@@ -1,0 +1,322 @@
+/** * Eric Meyer's Reset CSS v2.0 (http://meyerweb.com/eric/tools/css/reset/) * http://cssreset.com */
+/* line 5, ../scss/main.scss */
+body {
+  background-image: url("../file/img/bg.gif");
+  background-repeat: repeat;
+  background-attachment: fixed;
+}
+
+/* line 10, ../scss/main.scss */
+.alert {
+  margin-left: -113px;
+  position: fixed;
+  z-index: 22;
+  margin-top: 20px;
+  left: 50%;
+  top: 90px;
+  text-align: center;
+  display: none;
+  width: 226px;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+/* line 23, ../scss/main.scss */
+img {
+  border-style: none;
+}
+
+/* line 26, ../scss/main.scss */
+#back {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  display: none;
+  background: rgba(0, 0, 0, 0.8);
+  left: 0px;
+  top: 0px;
+  z-index: 20;
+}
+/* line 35, ../scss/main.scss */
+#back #jumpWrapped {
+  top: 10%;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+  height: 83%;
+  width: 73%;
+}
+/* line 42, ../scss/main.scss */
+#back #jumpWrapped #close {
+  background-image: url("../file/img/close_jumpwindows.png");
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  z-index: 5;
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+}
+/* line 52, ../scss/main.scss */
+#back #jumpWrapped #divShow {
+  top: 3%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  width: 98%;
+}
+
+/* line 63, ../scss/main.scss */
+#orgingebar {
+  width: 100%;
+  height: 20px;
+  margin-top: 8px;
+  border-bottom: solid 2px white;
+  border-top: solid 2px white;
+  background-color: #FF9600;
+  position: absolute;
+  z-index: 0;
+}
+
+/* line 73, ../scss/main.scss */
+.head {
+  float: left;
+  position: relative;
+}
+
+/* line 77, ../scss/main.scss */
+#logo {
+  height: 310px;
+  width: 300px;
+  background-image: url("../file/img/blockLeft.gif");
+  background-repeat: no-repeat;
+  z-index: 2;
+}
+/* line 83, ../scss/main.scss */
+#logo img {
+  height: 270px;
+  width: 270px;
+  vertical-align: middle;
+}
+
+/* line 89, ../scss/main.scss */
+.head_ul {
+  height: 25px;
+  left: 79px;
+  top: 33px;
+  overflow: hidden;
+  position: absolute;
+}
+/* line 95, ../scss/main.scss */
+.head_ul li {
+  height: 25px;
+  color: #473d2c;
+}
+/* line 99, ../scss/main.scss */
+.head_ul li:hover {
+  color: #473D2C;
+}
+
+/* line 103, ../scss/main.scss */
+#head_right_block {
+  height: 310px;
+  width: 350px;
+  left: 62%;
+  position: absolute;
+  background-image: url("../file/img/blockRight.gif");
+  background-repeat: no-repeat;
+}
+
+/* line 111, ../scss/main.scss */
+#head_login {
+  width: 190px;
+  height: 167px;
+  position: absolute;
+  left: 68%;
+  background-image: url("../file/img/login.png");
+  background-repeat: no-repeat;
+}
+/* line 118, ../scss/main.scss */
+#head_login form {
+  margin-top: 60px;
+  margin-left: -20px;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+/* line 124, ../scss/main.scss */
+#head_login form #login {
+  position: absolute;
+  background-image: url("../file/img/loginButton.png");
+  background-repeat: no-repeat;
+  left: 102px;
+  top: -22px;
+  height: 20px;
+  width: 50px;
+}
+/* line 134, ../scss/main.scss */
+#head_login form #login:hover {
+  background-image: url("../file/img/loginButtonOn.png");
+}
+/* line 137, ../scss/main.scss */
+#head_login form #register {
+  position: absolute;
+  background-image: url("../file/img/registerButton.png");
+  background-repeat: no-repeat;
+  left: 50px;
+  top: -22px;
+  height: 20px;
+  width: 50px;
+}
+/* line 146, ../scss/main.scss */
+#head_login form #register:hover {
+  background-image: url("../file/img/registerButtonOn.png");
+}
+/* line 149, ../scss/main.scss */
+#head_login form .row {
+  margin-top: -3px;
+}
+
+/* line 156, ../scss/main.scss */
+#head_left {
+  width: 26%;
+}
+
+/* line 160, ../scss/main.scss */
+#head_right {
+  width: 74%;
+  margin-top: 30px;
+}
+
+/* line 164, ../scss/main.scss */
+#opacity_pane {
+  opacity: 0.8;
+  width: 100%;
+  height: 170px;
+  margin-top: 60px;
+  background-color: #fff;
+  position: absolute;
+  z-index: 0;
+  clear: both;
+}
+
+/* line 174, ../scss/main.scss */
+#header {
+  width: 100%;
+  height: 260px;
+  margin: 0 auto;
+}
+/* line 181, ../scss/main.scss */
+#header #head_warpped {
+  width: 1100px;
+  height: 260px;
+  margin: 0 auto;
+  /*border:5px solid yellow;*/
+}
+
+/* line 189, ../scss/main.scss */
+body {
+  overflow: hidden;
+}
+
+/* line 192, ../scss/main.scss */
+#content {
+  width: 100%;
+  margin-top: -40px;
+  margin-bottom: 40px;
+}
+
+/* line 197, ../scss/main.scss */
+.cnt_warpped {
+  width: 1000px;
+  margin: 0 auto;
+}
+/* line 200, ../scss/main.scss */
+.cnt_warpped .close {
+  height: 40px;
+  width: 40px;
+  position: absolute;
+  margin-top: -11px;
+  margin-left: 966px;
+}
+/* line 206, ../scss/main.scss */
+.cnt_warpped .close img {
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
+/* line 212, ../scss/main.scss */
+.cnt_warpped .flag {
+  z-index: -2;
+  position: absolute;
+  margin-left: -60px;
+}
+/* line 217, ../scss/main.scss */
+.cnt_warpped .flag img {
+  height: 170px;
+  width: 80px;
+}
+/* line 223, ../scss/main.scss */
+.cnt_warpped .cnt_head {
+  margin: 0 auto;
+  background-image: url("../file/img/cntHead.png");
+  background-repeat: no-repeat;
+  height: 50px;
+  width: 1000px;
+}
+/* line 230, ../scss/main.scss */
+.cnt_warpped .cnt_body {
+  overflow: hidden;
+  margin: 0 auto;
+  background-image: url("../file/img/cntBody.png");
+  background-repeat: repeat-y;
+  width: 1000px;
+}
+/* line 238, ../scss/main.scss */
+.cnt_warpped .cnt_btm {
+  margin: 0 auto;
+  background-image: url("../file/img/cntBtm.png");
+  background-repeat: no-repeat;
+  height: 90px;
+  width: 1000px;
+}
+
+/* line 247, ../scss/main.scss */
+.clear {
+  clear: both;
+}
+
+/* line 253, ../scss/main.scss */
+#bodyscroll {
+  top: 0px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+/* line 259, ../scss/main.scss */
+#bodyscroll #bodywrapped {
+  left: 0px;
+  top: 0px;
+  position: absolute;
+  width: 1366px;
+}
+
+/*
+*fotter
+*/
+/* line 272, ../scss/main.scss */
+#footer-content {
+  height: 60px;
+  margin: 0 auto;
+  width: 800px;
+}
+/* line 276, ../scss/main.scss */
+#footer-content p {
+  font-size: .85em;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  right: 30px;
+  text-align: center;
+}

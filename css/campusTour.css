@@ -1,0 +1,596 @@
+/*the div including the first page and the second page*/
+#all
+{
+	margin: 0 auto;
+	width: 197%;
+	height: 546px;
+	border: solid 0px;
+	overflow-x:auto; 
+	overflow-y:hidden;
+}
+/*the div of the first page and the div of the second page*/
+#outside, #inside
+{
+	width: 49%;
+	height: 100%;
+	float: left;
+	margin-top: -6px;
+}
+/*the div of left buttons and the div of maps*/
+#place, #map
+{
+	float: left;
+}
+/*the div of left buttons*/
+#place
+{
+	width: 18.18%;
+	height: 100%;
+	border: solid 0px;
+}
+/*each left button*/
+.place
+{
+	margin-top: 1%;
+	margin-bottom: 9%;
+	margin-left: 18%;
+	padding: 3%;
+	width: 74%;
+	text-align: center;
+	border: solid 0px;
+	cursor: pointer;
+}
+/*the div of base maps*/
+#map
+{
+	float: left;
+	width: 80%;
+	height: 100%;
+	margin: 0.5%;
+	border: solid 0px;
+	overflow: hidden;
+	margin-left: 1%;
+}
+/*each base map*/
+#basemap
+{
+	display: block;
+}
+/*the place buttons of sport, landscape, meal, building, department*/
+.mSport, .mLandscape, .mMeal, .mBuilding, .mDepartment
+{
+	cursor: pointer;
+	display: none;
+	position: relative;
+	z-index: 1;
+}
+/*the place buttons of dormitory*/
+.mDormitory
+{
+	cursor: pointer;
+	display: block;
+}
+/*.mDormitory*/
+/*the place button of g-1-4*/
+#G-1-4
+{
+	left: 69px; 
+	top: -256px; 
+	position: relative;
+}
+/*the place button of g-5*/
+#G-5
+{
+	left: 133px; 
+	top: -307px;
+	position: relative;
+}
+/*the place button of b-3*/
+#B-3
+{
+	left: 63px; 
+	top: -343px; 
+	position: relative;
+}
+/*the place button of b-5*/
+#B-5
+{
+	left: 313px; 
+	top: -358px;
+	position: relative;
+}
+/*the place button of b-6*/
+#B-6
+{
+	left: 301px; 
+	top: -397px; 
+	position: relative;
+}
+/*the place button of b-7*/
+#B-7
+{
+	left: 280px; 
+	top: -450px;
+	position: relative;
+}
+/*the place button of b-9*/
+#B-9
+{
+	left: 682px; 
+	top: -723px;
+	position: relative;
+}
+/*the place button of b-11*/
+#B-11
+{
+	left: 221px; 
+	top: -640px; 
+	position: relative;
+}
+/*the place button of b-12*/
+#B-12
+{
+	left: 682px; 
+	top: -965px;
+	position: relative;
+}
+/*the place button of b-13*/
+#B-13
+{
+	left: 381px; 
+	top: -798px;
+	position: relative;
+}
+/*the place button of g-14*/
+#G-14
+{
+	left: 176px; 
+	top: -902px;
+	position: relative;
+}
+/*the place button of b-n*/
+#B-n
+{
+	left: 615px; 
+	top: -1208px;
+	position: relative;
+}
+/*the place button of i*/
+#I
+{
+	left: 243px; 
+	top: -1092px;
+	position: relative;
+}
+/*.mLandscape*/
+/*the place button of lake*/
+#Lake
+{
+	left: 309px; 
+	top: -525px;
+	position: relative;
+}
+/*the place button of pool*/
+#Pool
+{
+	left: 628px; 
+	top: -353px;
+	position: relative;
+}
+/*the place button of seat*/
+#Seat
+{
+	left: 21px; 
+	top: -346px;
+	position: relative;
+}
+/*the place button of cloud*/
+#Cloud
+{
+	left: 212px; 
+	top: -346px;
+	position: relative;
+}
+/*the place button of elephant*/
+#Elephant
+{
+	left: 631px; 
+	top: -464px;
+	position: relative;
+}
+/*the place button of wind*/
+#Wind
+{
+	left: 307px; 
+	top: -496px; 
+	position: relative;
+}
+/*the place button of river*/
+#River
+{
+	left: 200px; 
+	top: -651px;
+	position: relative;
+}
+/*the place button of tree*/
+#Tree
+{
+	left: 245px; 
+	top: -713px;
+	position: relative;
+}
+/*the place button of pen*/
+#Pen
+{
+	left: 554px; 
+	top: -725px;
+	position: relative;
+}
+/*the place button of taichi*/
+#Taichi
+{
+	left: 494px; 
+	top: -923px;
+	position: relative;
+}
+/*the place button of grass*/
+#Grass
+{
+	left: 355px; 
+	top: -1006px;
+	position: relative;
+}
+/*the place button of g-14-ground*/
+#G-14-ground
+{
+	left: 181px; 
+	top: -826px;
+	position: relative;
+}
+/*.mDepartment*/
+/*the place button of engineering-5*/
+#Engineering-5
+{
+	left: 39px; 
+	top: -363px;
+	position: relative;
+}
+/*the place button of engineering-3*/
+#Engineering-3
+{
+	left: 135px; 
+	top: -452px; 
+	position: relative;
+}
+/*the place button of engineering-2*/
+#Engineering-2
+{
+	left: 144px; 
+	top: -459px;
+	position: relative;
+}
+/*the place button of engineering-1*/
+#Engineering-1
+{
+	left: 176px; 
+	top: -515px;
+	position: relative;
+}
+/*the place button of photoelectric*/
+#Photoelectric
+{
+	left: 339px; 
+	top: -777px;
+	position: relative;
+}
+/*the place button of science-5*/
+#Science-5
+{
+	left: 568px; 
+	top: -850px;
+	position: relative;
+}
+/*the place button of science-4*/
+#Science-4
+{
+	left: 435px; 
+	top: -952px;
+	position: relative;
+}
+/*the place button of science-3*/
+#Science-3
+{
+	left: 453px; 
+	top: -985px;
+	position: relative;
+}
+/*the place button of science-2*/
+#Science-2
+{
+	left: 403px; 
+	top: -1048px;
+	position: relative;
+}
+/*the place button of science-1*/
+#Science-1
+{
+	left: 344px; 
+	top: -885px;
+	position: relative;
+}
+/*the place button of teach*/
+#Teach
+{
+	left: 504px; 
+	top: -1251px;
+	position: relative;
+}
+/*the place button of math*/
+#Math
+{
+	left: 494px; 
+	top: -1297px;
+	position: relative;
+}
+/*the place button of language*/
+#Language
+{
+	left: 544px; 
+	top: -1218px;
+	position: relative;
+}
+/*the place button of manage*/
+#Manage
+{
+	left: 588px; 
+	top: -1447px;
+	position: relative;
+}
+/*the place button of hakka*/
+#Hakka
+{
+	left: 370px; 
+	top: -1632px; 
+	position: relative;
+}
+/*.mMeal*/
+/*the place button of rest-7*/
+#Rest-7
+{
+	left: 266px; 
+	top: -69px;
+	position: relative;
+}
+/*the place button of rest-9*/
+#Rest-9
+{
+	left: 680px; 
+	top: -324px; 
+	position: relative;
+}
+/*the place button of late*/
+#Late
+{
+	left: 107px; 
+	top: -313px; 
+	position: relative;
+}
+/*the place button of backdoor*/
+#Backdoor
+{
+	left: 7px; 
+	top: -451px; 
+	position: relative;
+}
+/*the place button of cafe*/
+#Cafe
+{
+	left: 620px; 
+	top: -631px; 
+	position: relative;
+}
+/*the place button of chalet*/
+#Chalet
+{
+	left: 476px; 
+	top: -747px; 
+	position: relative;
+}
+/*the place button of pine*/
+#Pine
+{
+	left: 81px; 
+	top: -785px; 
+	position: relative;
+}
+/*.mBuilding*/
+/*the place button of admin*/
+#Admin
+{
+	left: 502px; 
+	top: -229px; 
+	position: relative;
+}
+/*the place button of computer*/
+#Computer
+{
+	left: 547px; 
+	top: -473px;
+	position: relative;
+}
+/*the place button of history*/
+#History
+{
+	left: 439px; 
+	top: -290px; 
+	position: relative;
+}
+/*the place button of complex*/
+#Complex
+{
+	left: 448px; 
+	top: -652px;
+	position: relative;
+}
+/*the place button of library*/
+#Library
+{
+	left: 433px; 
+	top: -568px;
+	position: relative;
+}
+/*the place button of show*/
+#Show
+{
+	left: 327px; 
+	top: -469px;
+	position: relative;
+}
+/*the place button of guoding*/
+#Guoding
+{
+	left: 555px; 
+	top: -824px; 
+	position: relative;
+}
+/*the place button of chungcheng*/
+#Chungcheng
+{
+	left: 351px; 
+	top: -836px;
+	position: relative;
+}
+/*the place button of zhidao*/
+#Zhidao
+{
+	left: 138px;
+	top: -775px;
+	position: relative;
+}
+/*the place button of hall*/
+#Hall
+{
+	left: 669px;
+	top: -1024px;
+	position: relative;
+}
+/*.mSport*/
+/*the place button of swim*/
+#Swim
+{
+	left: 276px; 
+	top: -482px; 
+	position: relative;
+}
+/*the place button of playground*/
+#Playground
+{
+	left: 194px; 
+	top: -490px;
+	position: relative;
+}
+/*the place button of gym*/
+#Gym
+{
+	left: 209px; 
+	top: -532px; 
+	position: relative;
+}
+/*the divs in the second page*/
+.inside
+{
+	float: left;
+}
+/*the div of return button*/
+#return
+{	
+	margin-bottom: 0px;
+	width: 9%;
+	height: 14%;
+	margin-top: 46.5%;
+	padding: 0.5%;
+	text-align: center;
+	border: solid 0px #c3c3c3;
+	display: none;
+	cursor: pointer;
+	margin-left: 1%;
+}
+/*the div of the detail of place*/
+#detail
+{
+	width: 87%;
+	height: 95%;
+	margin: 1%;
+	border: solid 0px #c3c3c3;
+}
+/*the divs in details*/
+.detail
+{
+	float: left;
+	margin: 1%;
+	padding: 0.5%;
+	border: solid 0px;
+}
+/*the tag h1 in class detail*/
+.detail h1
+{
+	font-size: 40px;
+	font-weight: bolder;
+	text-align: center;
+}
+/*the tag h2 in class detail*/
+.detail h2
+{
+	font-size: 30px;
+}
+/*the tag p in class detail*/
+.detail p
+{
+	font-size: 20px;
+}
+/*the tag a in class detail*/
+.detail a
+{
+	text-decoration: none;
+}
+/*the img of loading*/
+#loading
+{
+	left: 54%;
+	top: 270px;
+	position: relative;
+}
+/*the div of goolemap and the div of the space of introduction*/
+#google, #space
+{
+	margin-left: 0.1%;
+}
+/*the div of googlemap*/
+#google
+{
+	width: 30%;
+	height: 101%;
+}
+/*the div of the space of introduction*/
+#space
+{
+	width: 65%;
+	height: 99%;
+	top: 0.5%;
+	position: relative;
+	overflow: hidden;
+	border-radius: 10px;
+	background-color: lightblue;
+	border: solid 3px;
+}
+/*the div of introduction*/
+#introduction
+{
+	top: 0px;
+	position: absolute;
+	width: 90%;
+	line-height: 200%;
+	word-wrap: break-word; 
+	word-break: normal;
+	font-family: 微軟正黑體;
+}
